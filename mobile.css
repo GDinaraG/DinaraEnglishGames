@@ -1,0 +1,175 @@
+/* Final responsive layer. Loaded after every game stylesheet. */
+@media (max-width: 700px) {
+  :root { --mobile-pad: clamp(14px, 4vw, 20px); }
+
+  html { font-size: 16px; scroll-padding-top: 64px; }
+  body { min-width: 0; }
+  button, input, textarea, summary { touch-action: manipulation; }
+  button, [role="button"], summary { min-height: 44px; }
+
+  header {
+    position: absolute;
+    height: 64px;
+    padding: 0 14px;
+    gap: 10px;
+  }
+  .brand { gap: 9px; min-width: 0; }
+  .brand .seal { width: 40px; height: 40px; flex: 0 0 40px; font-size: 25px; }
+  .brand b { display: block; font-size: clamp(17px, 5vw, 20px); white-space: nowrap; }
+  .brand small { font-size: 9px; }
+  header .login { flex: 0 1 auto; min-width: 44px; max-width: 112px; padding: 4px; gap: 7px; }
+  header .login img { width: 40px; height: 40px; flex-basis: 40px; }
+  header .login span { overflow: hidden; font-size: 12px; text-overflow: ellipsis; }
+
+  .hero {
+    min-height: 100svh;
+    padding: 104px var(--mobile-pad) 112px;
+    align-items: flex-start;
+    background-position: 64% center;
+  }
+  .hero .stamp { padding: 6px 10px; font-size: 14px; }
+  .hero .eyebrow { margin-top: 22px; font-size: 10px; line-height: 1.5; }
+  .hero h1 { margin: 14px 0 18px; font-size: clamp(40px, 12.5vw, 54px); line-height: .94; overflow-wrap: anywhere; }
+  .hero .lead { font-size: 14px; line-height: 1.65; }
+  .hero .primary { width: 100%; margin-top: 18px; padding: 15px 18px; }
+  .hero-credit { right: var(--mobile-pad); bottom: 20px; left: var(--mobile-pad); min-width: 0; }
+
+  .cases { padding: 38px 0 34px; }
+  .section-head { padding: 0 var(--mobile-pad); margin-bottom: 16px; }
+  .section-head h2 { font-size: 22px; }
+  .case-carousel { padding: 0; }
+  .case-grid { gap: 12px; padding: 8px var(--mobile-pad) 22px; scroll-padding-inline: var(--mobile-pad); }
+  .case-grid .dossier { flex: 0 0 calc(100vw - 2 * var(--mobile-pad)); min-height: 390px; padding: 31px 18px 16px; }
+  .case-arrow { display: none; }
+  .case-inner { grid-template-columns: 38% minmax(0, 1fr); gap: 14px; }
+  .photo { height: 190px; padding: 6px; }
+  .case-copy h3 { font-size: 22px; overflow-wrap: anywhere; }
+  .case-copy p { min-height: 0; font-size: 12px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tags span { margin: 0; }
+  .mark { right: 13px; bottom: 75px; font-size: 11px; }
+  footer { padding: 24px var(--mobile-pad); }
+
+  .name-modal, .modal { padding: 0; align-items: stretch; }
+  .name-card {
+    width: 100%; max-height: 100dvh; min-height: 100dvh;
+    padding: 64px var(--mobile-pad) 28px;
+    border-radius: 0; clip-path: none;
+  }
+  .name-card h2 { margin: 10px 0 20px; font-size: 34px; }
+  .name-card > p { margin-top: 22px; line-height: 1.5; }
+  .name-card input { font-size: 18px; }
+  .avatar-picker { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .avatar-picker img { width: 48px; height: 48px; }
+
+  .modal.active { display: block; }
+  .game,
+  .game.heist-modal,
+  .game.missing-modal,
+  .game.evidence-modal,
+  .game.signal-modal {
+    width: 100%; max-width: none; height: 100dvh; max-height: 100dvh;
+    margin: 0; padding: 0; border: 0; border-radius: 0; clip-path: none;
+    overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+  }
+  .game > .close { position: fixed; z-index: 100; top: max(7px, env(safe-area-inset-top)); right: 8px; width: 44px; height: 44px; padding: 0; border-radius: 50%; background: #0b0907dd; color: #e0c27e; line-height: 1; }
+  .game-top { padding-right: 45px; }
+  .toast { width: calc(100% - 28px); bottom: max(14px, env(safe-area-inset-bottom)); text-align: center; }
+
+  /* Verb Heist */
+  .heist { min-height: 100dvh; }
+  .heist .heist-header { min-height: 76px; padding: 12px 54px 10px 12px; }
+  .heist-header > div:first-child b { font-size: 16px; }
+  .heist-stats { gap: 7px; }
+  .heist-stats span { font-size: 8px; }
+  .heist-layout { display: flex; flex-direction: column; }
+  .safe-side { padding: 12px var(--mobile-pad); }
+  .safe-shell { height: 170px; max-width: 330px; margin-inline: auto; }
+  .safe-grid { padding: 31px 45px 18px; }
+  .task-panel { padding: 22px var(--mobile-pad) 32px; }
+  .task-panel h2 { margin: 14px 0; font-size: 29px; }
+  .result-stats { grid-template-columns: 1fr 1fr; }
+
+  /* Missing Student */
+  .ms-game { min-height: 100dvh; }
+  .ms-head { min-height: 76px; height: auto; padding: 12px 52px 10px 12px; gap: 8px; }
+  .ms-head > div:first-child b { font-size: 16px !important; }
+  .ms-head > span { display: none; }
+  .ms-head > div:last-child { text-align: right; }
+  .ms-game .ms-head button[data-action="levels"] { padding: 8px; font-size: 10px; }
+  .ms-layout { display: flex !important; flex-direction: column; min-height: calc(100dvh - 76px); }
+  .ms-layout aside { width: auto; padding: 16px var(--mobile-pad); }
+  .ms-task, .ms-game.level-bg .ms-task, .ms-game.level-2 .ms-task { padding: 24px var(--mobile-pad) 34px; }
+  .ms-game .ms-task h2 { font-size: clamp(28px, 9vw, 36px); }
+  .ms-game .verb-forms span { font-size: 20px; }
+  .ms-game .case-text, .ms-game.level-3 .case-text { padding: 15px; font-size: 17px; line-height: 1.75; }
+  .letter-lock { max-width: 100%; }
+
+  /* Evidence Room */
+  .evidence-game { min-height: 100dvh; }
+  .er-head { min-height: 72px; height: auto; padding: 10px 54px 10px 12px; }
+  .er-head > div:first-child b { font-size: 17px; }
+  .er-head > div:last-child { display: none; }
+  .er-intro, .er-complete { min-height: calc(100dvh - 72px); padding: 20px var(--mobile-pad); }
+  .er-intro > div { width: 100%; padding: 32px 18px; }
+  .er-intro h2, .er-complete h2 { font-size: 38px; }
+  .er-stage { min-height: calc(100dvh - 72px); padding: 20px var(--mobile-pad) 32px; }
+  .er-copy h2 { font-size: 30px; }
+  .evidence-grid, .er-match .evidence-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .evidence-card i { height: auto; aspect-ratio: 4 / 3; }
+  .evidence-card b { padding-inline: 5px; font-size: 13px; }
+  .description-list, .event-pool, .timeline-strip { grid-template-columns: 1fr; }
+  .witness-file { margin: 18px 0; padding: 20px 17px; }
+  .witness-file p { font-size: 21px; line-height: 1.5; }
+  .witness-record { display: block; margin: 18px 0; }
+  .suspect-card, .dossier-person { grid-template-columns: 96px minmax(0, 1fr); }
+  .suspect-card q { min-height: 0; }
+  .dossier-workspace { display: block; }
+  .dossier-workspace .dossier-descriptions { margin-top: 12px; grid-template-columns: 1fr; }
+  .er-match .dossier-workspace .dossier-evidence { grid-template-columns: 1fr 1fr; }
+  .clue-options { grid-template-columns: 1fr; }
+
+  /* Signal Intercept */
+  .signal-game { min-height: 100dvh; }
+  .signal-header { min-height: 76px; height: auto; padding: 12px 52px 10px 12px; }
+  .signal-header > div:first-child b { font-size: 16px; }
+  .signal-header > span { display: none; }
+  .signal-stats { gap: 7px; }
+  .signal-stats span { font-size: 8px; }
+  .signal-intro, .signal-results { min-height: calc(100dvh - 76px); padding: 28px var(--mobile-pad); }
+  .signal-intro h2, .signal-results h2 { font-size: 34px; overflow-wrap: anywhere; }
+  .signal-simple { display: block; min-height: 0; }
+  .signal-simple .receiver { margin: 0; padding: 18px var(--mobile-pad); border-radius: 0; }
+  .signal-simple .console { margin: 0; padding: 18px var(--mobile-pad) 32px; border-radius: 0; }
+  .radio-scale span:not(:first-child):not(:last-child) { display: none; }
+  .wave-navigation { grid-template-columns: 32px minmax(0, 1fr) 32px; gap: 4px; }
+  .wave-navigation > button { width: 32px; height: 56px; min-height: 56px; }
+  .signal-simple .wave { height: 145px; }
+  .listen-modes { grid-template-columns: 1fr; }
+  .listen-modes button { min-height: 58px; }
+  .signal-simple .console .transcript { padding: 14px; }
+  .signal-simple .transcript textarea { font-size: 16px; }
+  .transcript-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .transcript-actions .decode { grid-column: 1 / -1; width: 100%; margin-left: 0; }
+  .message-complete > div, .signal-results .report { grid-template-columns: 1fr 1fr; }
+  .question-panel, .message-complete { padding: 28px var(--mobile-pad); }
+}
+
+@media (max-width: 380px) {
+  header .login span, .brand small { display: none; }
+  .hero h1 { font-size: 39px; }
+  .case-inner { grid-template-columns: 34% minmax(0, 1fr); gap: 10px; }
+  .case-copy h3 { font-size: 19px; }
+  .avatar-picker span small { display: none; }
+  .er-match .dossier-workspace .dossier-evidence { grid-template-columns: 1fr; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .dossier:hover, .dossier:nth-child(2):hover, .suspect-card:hover, .dossier-person:hover, .primary:hover { transform: none; }
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .hero { min-height: 620px; }
+  .name-card { padding-top: 42px; }
+  .safe-shell { height: 150px; }
+}
