@@ -1,0 +1,334 @@
+.signal-note {
+  margin: 18px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid #6f6544;
+  color: #737f74;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.dossier.complete .mark {
+  border-color: #39734b;
+  color: #2f7045;
+  background: rgba(213, 228, 199, 0.28);
+  transform: rotate(11deg);
+}
+
+/* Radio station treatment */
+.game.signal-modal {
+  border: 3px solid #63583b;
+  border-radius: 18px;
+  box-shadow: 0 0 0 7px #171914, 0 32px 110px #000, inset 0 0 0 1px #9d8a54;
+  background: #10140f;
+}
+
+.signal-header {
+  background: linear-gradient(180deg, #1b2019, #0b0e0b);
+  box-shadow: inset 0 -1px #776743, inset 0 8px 20px #ffffff05;
+}
+
+.signal-simple .receiver {
+  position: relative;
+  margin: 18px;
+  padding: 25px 26px 30px;
+  border: 2px solid #5e684f;
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 9px 9px, #9b8958 0 2px, #262c22 3px 5px, transparent 6px),
+    radial-gradient(circle at calc(100% - 9px) 9px, #9b8958 0 2px, #262c22 3px 5px, transparent 6px),
+    radial-gradient(circle at 9px calc(100% - 9px), #9b8958 0 2px, #262c22 3px 5px, transparent 6px),
+    radial-gradient(circle at calc(100% - 9px) calc(100% - 9px), #9b8958 0 2px, #262c22 3px 5px, transparent 6px),
+    linear-gradient(145deg, #20271f, #0b100c 58%, #171d16);
+  box-shadow: inset 0 0 35px #000, 0 13px 30px #0008;
+}
+
+.receiver-label {
+  padding: 0 7px 12px;
+  border-bottom: 1px solid #52604c;
+}
+
+.radio-scale {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 13px 0 8px;
+  padding: 0 13px;
+  border: 1px solid #766a49;
+  border-radius: 4px;
+  background: linear-gradient(#171b15, #090c09);
+  color: #778573;
+  font: 8px monospace;
+  letter-spacing: 1px;
+  box-shadow: inset 0 0 12px #000;
+}
+
+.radio-scale:after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 7px;
+  height: 5px;
+  background: repeating-linear-gradient(90deg, #71806b 0 1px, transparent 1px 10px);
+  opacity: .55;
+}
+
+.radio-scale b {
+  color: #c9b36d;
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+
+.radio-scale i {
+  position: absolute;
+  z-index: 2;
+  left: 49%;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: #d5bd69;
+  box-shadow: 0 0 9px #e5c85c;
+}
+
+.signal-simple .wave {
+  margin-top: 0;
+  border: 5px solid #252d24;
+  border-radius: 7px;
+  outline: 1px solid #718065;
+  background: radial-gradient(circle, #102118, #040906 74%);
+  box-shadow: inset 0 0 45px #000, 0 4px 14px #000;
+}
+
+.signal-simple .console {
+  margin: 18px 18px 18px 0;
+  border: 1px solid #4d5947;
+  border-radius: 13px;
+  background:
+    linear-gradient(145deg, #111912a8, #050806bd),
+    url('../assets/signal-intercept/case-021-cover.png') center 54%/cover;
+  background-blend-mode: normal;
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 35px #000, 0 13px 30px #0008;
+}
+
+.listen-modes button {
+  border: 1px solid #756744;
+  border-radius: 5px;
+  background: linear-gradient(#293127, #131913);
+  box-shadow: inset 0 1px #ffffff12, 0 4px 8px #0008;
+}
+
+.listen-modes button:hover,
+.listen-modes button.active {
+  color: #f0dfad;
+  border-color: #d0b45e;
+  background: linear-gradient(#3a432f, #20281c);
+  box-shadow: 0 0 18px #c6a64c2c, inset 0 1px #ffffff1c;
+}
+
+.transcript-actions button {
+  border-radius: 4px;
+  background: #192019;
+}
+
+.transcript-actions .decode {
+  padding-inline: 18px;
+  background: linear-gradient(#dec475, #aa8e45);
+  border-color: #e3cb7e;
+  box-shadow: 0 5px 16px #0009, 0 0 16px #c6a84b25;
+}
+
+@media(max-width:820px) {
+  .signal-simple .console { margin: 0 18px 18px; }
+}
+
+.signal-intro {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, #07100b9c, #07100b75 48%, #07100ba3),
+    linear-gradient(0deg, #0508068c, transparent 45%, #05080682),
+    url('../assets/signal-intercept/radio-console.png') center/cover;
+  text-shadow: 0 2px 12px #000;
+}
+
+.signal-intro:before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(circle at 50% 52%, transparent 0 24%, #02040352 78%);
+  backdrop-filter: blur(.4px);
+}
+
+.signal-intro .radar {
+  background: #07100bd9;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 6px #07100b99, 0 0 45px #b49b5738;
+}
+
+.signal-intro > span {
+  color: #b5beb3;
+}
+
+.signal-intro > button {
+  box-shadow: 0 8px 28px #000, 0 0 22px #c5aa5730;
+}
+
+.signal-simple .receiver:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 11px;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, #07100b8f, #07100b6b),
+    url('../assets/signal-intercept/radio-console.png') center/cover;
+  background-blend-mode: normal;
+  opacity: .78;
+}
+
+.signal-simple .receiver > * {
+  position: relative;
+  z-index: 1;
+}
+
+.signal-simple .console .transcript {
+  padding: 20px;
+  border-radius: 8px;
+  background: #080d09cf;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 8px 30px #000b;
+}
+
+.dossier[data-open="2"] .photo img {
+  object-position: center 58%;
+  filter: sepia(.12) saturate(.72) contrast(1.08);
+}
+
+/* Readability and clean receiver panel */
+.signal-simple .receiver:before {
+  display: none;
+}
+
+.signal-simple .receiver-label {
+  font-size: 11px;
+  letter-spacing: 2.4px;
+}
+
+.signal-simple .receiver-label b {
+  font-size: 11px;
+}
+
+.signal-simple .radio-scale {
+  height: 44px;
+  font-size: 10px;
+}
+
+.signal-simple .radio-scale b {
+  font-size: 10px;
+}
+
+.signal-simple .transport {
+  font-size: 13px;
+  color: #b4bdae;
+}
+
+.signal-simple .listen-modes span {
+  font-size: 11px;
+  line-height: 1.25;
+  letter-spacing: .7px;
+}
+
+.signal-simple .listen-modes small {
+  margin-top: 7px;
+  font-size: 9px;
+  line-height: 1.3;
+  color: #9ca799;
+}
+
+.signal-simple .listen-modes i {
+  font-size: 25px;
+}
+
+.signal-simple .console .transcript > div:first-child {
+  font-size: 11px;
+}
+
+.signal-simple .transcript textarea {
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.signal-simple .transcript textarea::placeholder {
+  color: #9ca19b;
+  opacity: .9;
+}
+
+.signal-simple .transcript-actions button {
+  padding: 12px 14px;
+  font-size: 10px;
+}
+
+.signal-simple .transcript-actions .decode {
+  padding-inline: 22px;
+  font-size: 10px;
+}
+
+.signal-header > div:first-child b {
+  font-size: 22px;
+}
+
+.signal-header small,
+.signal-header > span {
+  font-size: 10px;
+}
+
+.wave-navigation {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 9px;
+}
+
+.wave-navigation .wave {
+  width: 100%;
+}
+
+.wave-navigation > button {
+  width: 44px;
+  height: 74px;
+  border: 1px solid #807049;
+  border-radius: 5px;
+  background: linear-gradient(#2a3328, #111711);
+  color: #e0c675;
+  font: 38px/1 Georgia;
+  box-shadow: inset 0 1px #ffffff13, 0 5px 14px #0009;
+}
+
+.wave-navigation > button:hover {
+  border-color: #d2b65f;
+  color: #fff0b1;
+  background: linear-gradient(#3c4735, #1d261b);
+  box-shadow: 0 0 18px #c5a84e35;
+}
+
+.transcript-actions button:disabled {
+  opacity: .65;
+  cursor: default;
+}
+
+@media(max-width:560px) {
+  .wave-navigation { grid-template-columns: 34px minmax(0, 1fr) 34px; gap: 5px; }
+  .wave-navigation > button { width: 34px; height: 58px; font-size: 30px; }
+}
+
+.signal-simple .transcript-actions button[data-action="hint"].active {
+  border-color: #d4b664;
+  background: #4b3e20;
+  color: #ffe5a0;
+  box-shadow: 0 0 14px #d0b15b42;
+}

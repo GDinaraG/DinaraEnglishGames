@@ -1,0 +1,15 @@
+const assert=require('node:assert');
+const {normalize,compare,transcriptPoints}=require('./core.js');
+assert.equal(normalize('  Don’t  STOP. '),"don't stop");
+assert.equal(compare('Meet me outside.','meet me outside').exact,true);
+assert.equal(compare('Meet me outside the library','Meet outside the library').words[1].status,'missing');
+assert.equal(compare('If the lights go out again leave the building immediately and call the police','If the lights go out again leave the building and call the police').words.filter(x=>x.status!=='correct').length,1);
+assert.equal(compare('one two three four five','one four five').words.filter(x=>x.status!=='correct').length,2);
+assert.equal(compare('Bring it to Room Twelve.','Bring it to Room 12').exact,true);
+assert.equal(compare('about ten minutes ago','about 10 minutes ago').exact,true);
+assert.equal(compare('at quarter past six','at 6:15').exact,true);
+assert.equal(compare('at quarter past six','at 06.15').exact,true);
+assert.equal(compare('at quarter past six','at quater past six').exact,true);
+assert.equal(compare('the side door','side the door').words.some(x=>x.status==='misplaced'),true);
+assert.equal(transcriptPoints(1),300);assert.equal(transcriptPoints(2),200);assert.equal(transcriptPoints(4),100);
+console.log('Signal Intercept core tests passed');

@@ -1,0 +1,10 @@
+(function(){
+ const rows=[
+  ['01','Meet me outside the library at quarter past six. Don’t tell anyone.',['Meet me outside the library','at quarter past six','Don’t tell anyone'],6.4,'Where should they meet?',['Outside the library.','Inside the café.','Near the station.'],0,'They should meet outside the library.'],
+  ['02','The photograph is hidden inside the blue folder. Bring it to Room Twelve.',['The photograph is hidden','inside the blue folder','Bring it to Room Twelve'],7.04,'Where is the photograph?',['Inside the blue folder.','Under the desk.','In Room Twelve.'],0,'The photograph is inside the blue folder.'],
+  ['03','I’ve already checked the main entrance, but the side door is still open.',["I’ve already checked",'the main entrance','but the side door','is still open'],5.64,'Which door is open?',['The main door.','The side door.','The back door.'],1,'The side door is still open.'],
+  ['04','Someone left a black backpack under the stairs about ten minutes ago.',['Someone left a black backpack','under the stairs','about ten minutes ago'],5.68,'What was left under the stairs?',['A blue folder.','A black backpack.','A photograph.'],1,'Someone left a black backpack.'],
+  ['05','If the lights go out again, leave the building immediately and call the police.',['If the lights go out again','leave the building immediately','and call the police'],6.72,'What should the listener do if the lights go out?',['Wait inside the building.','Leave and call the police.','Use the side door.'],1,'Leave the building immediately and call the police.']
+ ];
+ window.SignalInterceptData=rows.map((r,i)=>{const fileName=r[1].replace(/[.!?]$/,'')+'.wav',audioSrc=encodeURIComponent(fileName),totalWords=r[2].reduce((n,p)=>n+p.split(/\s+/).length,0);let elapsed=0;const phrases=r[2].map((text,index)=>{const words=text.split(/\s+/).length,start=elapsed/r[3]*r[3];elapsed+=words/totalWords*r[3];return{text,start:+start.toFixed(2),end:+elapsed.toFixed(2),index}});return{id:r[0],level:i+1,transcript:r[1],phrases,duration:r[3],audioSrc,question:{prompt:r[4],options:r[5],correct:r[6],explanation:r[7]}}});
+})();

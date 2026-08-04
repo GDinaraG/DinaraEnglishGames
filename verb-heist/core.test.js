@@ -1,0 +1,15 @@
+const assert=require('assert'),core=require('./core'),verbs=require('./data');
+assert(core.checkAnswer('took','took'),'correct V2');
+assert(core.checkAnswer('TAKEN','taken'),'uppercase V3');
+assert(core.checkAnswer('  written  ','written'),'trim spaces');
+assert(!core.checkAnswer('taked','took'),'reject wrong form');
+assert(!core.checkAnswer('took','taken'),'reject V2 for V3');
+assert.equal(core.scoreFor(1,false,1),100,'first attempt score');
+assert.equal(core.scoreFor(2,false,1),50,'second attempt score');
+assert.equal(core.scoreFor(1,true,1),75,'hint penalty');
+assert.equal(core.scoreFor(1,false,5),200,'five-answer multiplier');
+let s=core.createState(verbs,()=>0);core.recordWrong(s);core.recordWrong(s);assert.equal(s.lives,2,'life lost after two errors');
+s.task=2;core.advanceTask(s);assert.equal(s.opened,1,'block completion opens section');
+s.opened=4;s.block=4;s.task=2;core.advanceTask(s);assert.equal(s.status,'completed','five blocks complete game');
+const selected=core.createState(verbs,Math.random).verbs;assert.equal(new Set(selected.map(v=>v.base)).size,5,'no repeated verbs');
+console.log('Verb Heist core tests: 12 passed');
