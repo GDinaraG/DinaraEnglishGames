@@ -314,22 +314,22 @@
     position: absolute;
     z-index: 8;
     top: 48%;
-    width: 44px;
-    height: 56px;
-    min-height: 56px;
+    width: 28px;
+    height: 54px;
+    min-height: 54px;
     padding: 0;
     place-items: center;
     transform: translateY(-50%);
     border: 1px solid #d2b16f;
-    border-radius: 6px;
-    background: #0c0a07e8;
+    border-radius: 5px;
+    background: #0c0a07b8;
     color: #f1d08d;
-    font: 38px/1 Georgia, serif;
-    box-shadow: 0 6px 22px #000, 0 0 16px #d4ad5c38;
+    font: 28px/1 Georgia, serif;
+    box-shadow: 0 4px 14px #000b, 0 0 10px #d4ad5c28;
     backdrop-filter: blur(5px);
   }
-  .case-arrow.prev { left: 4px; }
-  .case-arrow.next { right: 4px; }
+  .case-arrow.prev { left: 2px; }
+  .case-arrow.next { right: 2px; }
   .case-arrow:active {
     color: #17120b;
     background: #e0c083;
