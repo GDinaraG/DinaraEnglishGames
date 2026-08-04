@@ -155,6 +155,66 @@
   .question-panel, .message-complete { padding: 28px var(--mobile-pad); }
 }
 
+/* Desktop sign-in affordance: bright, borderless and clearly interactive. */
+@media (min-width: 701px) {
+  header .login {
+    position: relative;
+    border: 0;
+    background: transparent;
+    color: #f3d58f;
+    cursor: pointer;
+    box-shadow: none;
+    transition: transform .22s ease, filter .22s ease;
+  }
+  header .login::before {
+    content: '';
+    position: absolute;
+    inset: -8px -12px;
+    z-index: -1;
+    border-radius: 10px;
+    background: radial-gradient(circle, #d3a64b24, transparent 70%);
+    opacity: .5;
+    transform: scale(.85);
+    transition: opacity .25s ease, transform .25s ease, background .25s ease;
+  }
+  header .login span {
+    color: #f5d894;
+    font-weight: 700;
+    text-shadow: 0 0 8px #d7a74670;
+    transition: color .2s ease, text-shadow .2s ease, transform .2s ease;
+  }
+  header .login img {
+    border-color: #c79c4d;
+    box-shadow: 0 0 14px #d3a34c55;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  header .login:hover,
+  header .login:focus-visible {
+    outline: none;
+    filter: brightness(1.12);
+    transform: translateY(-3px) scale(1.025);
+  }
+  header .login:hover::before,
+  header .login:focus-visible::before {
+    opacity: 1;
+    transform: scale(1.08);
+    background: radial-gradient(circle, #e5b55742, transparent 72%);
+  }
+  header .login:hover span,
+  header .login:focus-visible span {
+    color: #ffe9b2;
+    text-shadow: 0 0 7px #ffd77f, 0 0 20px #d79b35;
+    transform: translateX(2px);
+  }
+  header .login:hover img,
+  header .login:focus-visible img {
+    border-color: #f0c66f;
+    box-shadow: 0 0 12px #f3c66ca8, 0 0 28px #d99d3e8c;
+    transform: scale(1.07) rotate(-1deg);
+  }
+  header .login:active { transform: translateY(0) scale(.98); }
+}
+
 @media (max-width: 380px) {
   .brand small { display: none; }
   .hero h1 { font-size: 39px; }
