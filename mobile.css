@@ -305,3 +305,34 @@
   .answer-row input { width: 1px; }
   .answer-row button { flex: 0 0 auto; padding-inline: 14px; }
 }
+
+/* Make the mobile case carousel visibly discoverable. */
+@media (max-width: 700px) {
+  .case-carousel { position: relative; }
+  .case-arrow {
+    display: grid;
+    position: absolute;
+    z-index: 8;
+    top: 48%;
+    width: 44px;
+    height: 56px;
+    min-height: 56px;
+    padding: 0;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 1px solid #d2b16f;
+    border-radius: 6px;
+    background: #0c0a07e8;
+    color: #f1d08d;
+    font: 38px/1 Georgia, serif;
+    box-shadow: 0 6px 22px #000, 0 0 16px #d4ad5c38;
+    backdrop-filter: blur(5px);
+  }
+  .case-arrow.prev { left: 4px; }
+  .case-arrow.next { right: 4px; }
+  .case-arrow:active {
+    color: #17120b;
+    background: #e0c083;
+    transform: translateY(-50%) scale(.94);
+  }
+}
