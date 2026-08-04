@@ -173,3 +173,135 @@
   .name-card { padding-top: 42px; }
   .safe-shell { height: 150px; }
 }
+
+/* Phone layout hardening: prevent flex/grid min-content from widening games. */
+@media (max-width: 700px) {
+  .modal,
+  .modal.active,
+  .game,
+  .game > div,
+  .heist,
+  .ms-game,
+  .evidence-game,
+  .signal-game {
+    max-width: 100vw;
+  }
+
+  .game *,
+  .game *::before,
+  .game *::after {
+    min-width: 0;
+  }
+
+  .modal { width: 100vw; overflow: hidden; }
+  .game { contain: inline-size; }
+  .game img, .game textarea, .game input { max-width: 100%; }
+  .game h1, .game h2, .game h3, .game p, .game span, .game b, .game q, .game blockquote {
+    overflow-wrap: anywhere;
+  }
+
+  /* Missing Student: compact status strip and a true one-column task. */
+  .ms-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    padding: 9px 50px 9px 12px;
+  }
+  .ms-head > div:first-child { overflow: hidden; }
+  .ms-head > div:first-child b { font-size: 14px !important; white-space: normal; line-height: 1.05; }
+  .ms-head > div:first-child small { display: block; margin-top: 4px; font-size: 8px !important; }
+  .ms-head > div:last-child { display: flex; align-items: center; gap: 6px; font-size: 0 !important; }
+  .ms-head > div:last-child b { margin: 0 !important; font-size: 14px !important; }
+  .ms-head > div:last-child b::before { content: '★ '; color: #8f7445; }
+  .ms-game .ms-head button[data-action="levels"] {
+    width: 92px; padding: 7px 5px; font-size: 9px; line-height: 1.15;
+  }
+  .ms-layout { width: 100%; overflow: hidden; }
+  .ms-layout > aside, .ms-layout > .ms-task { width: 100%; max-width: 100%; }
+  .ms-layout aside { padding: 12px; border-right: 0; border-bottom: 1px solid #443621; }
+  .ms-vault-title { width: auto !important; padding: 5px 7px !important; font-size: 9px !important; }
+  .lock-grid {
+    width: 100%; margin: 10px 0 4px; gap: 6px;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .padlock { width: auto; height: 64px; }
+  .padlock i { width: 23px; height: 20px; border-width: 3px; }
+  .padlock::after { width: 31px; height: 26px; }
+  .padlock b { bottom: 6px; font-size: 9px !important; }
+  .ms-layout aside > p { display: none; }
+  .ms-task, .ms-game.level-bg .ms-task, .ms-game.level-2 .ms-task {
+    width: 100%; padding: 22px 14px 30px !important;
+  }
+  .ms-game .ms-task h2 {
+    margin: 4px 0 16px !important;
+    font-size: clamp(25px, 8vw, 32px) !important;
+    line-height: 1.16;
+  }
+  .verb-forms {
+    display: grid; grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr) 12px minmax(0, 1fr);
+    width: 100%; min-height: 92px; gap: 2px; padding: 12px 6px;
+  }
+  .ms-game .verb-forms span {
+    min-width: 0 !important; width: auto; padding: 0 2px;
+    font-size: clamp(13px, 4.2vw, 18px) !important;
+    line-height: 1.25; overflow-wrap: anywhere;
+  }
+  .verb-forms i { text-align: center; font-size: 11px; }
+  .ms-task label { margin-top: 18px; }
+  .ms-task input { padding: 13px 12px; font-size: 17px !important; }
+  .ms-confirm { width: 100%; margin-top: 10px; padding: 13px 10px !important; }
+  .forms-hint p { font-size: 14px !important; overflow-wrap: anywhere; }
+  .letter-lock { width: 100%; gap: 6px; margin: 18px 0; }
+  .letter-lock button { flex: 0 0 43px; width: 43px; height: 49px; font-size: 19px !important; }
+  .built-word { max-width: 100%; flex-wrap: wrap; }
+  .case-text, .ms-game.level-3 .case-text {
+    width: 100%; padding: 14px 12px !important;
+    font-size: 16px !important; line-height: 1.9 !important;
+  }
+  .word-editor { display: inline-flex; max-width: 100%; flex-wrap: wrap; }
+  .word-editor input { width: 120px; }
+
+  /* Signal Intercept: remove the desktop cabinet margins and oversized panels. */
+  .signal-header {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    padding: 9px 50px 9px 12px;
+  }
+  .signal-header > div:first-child b { font-size: 14px; line-height: 1.1; }
+  .signal-header small { display: block; margin-top: 4px; font-size: 8px; }
+  .signal-stats { gap: 5px; }
+  .signal-stats span { display: none; }
+  .signal-stats button { padding: 7px 5px; font-size: 8px; }
+  .signal-simple, .signal-simple > *, .signal-layout, .signal-layout > * { width: 100%; max-width: 100%; }
+  .signal-simple .receiver, .signal-simple .console {
+    margin: 0 !important; padding: 14px 12px 18px; border-width: 0 0 1px; border-radius: 0;
+  }
+  .signal-simple .receiver-label { padding: 0 2px 8px; font-size: 9px; letter-spacing: 1.2px; }
+  .signal-simple .radio-scale { height: 38px; margin: 9px 0 6px; padding-inline: 8px; }
+  .wave-navigation { width: 100%; }
+  .signal-simple .wave { width: 100%; height: 118px; border-width: 3px; padding: 10px 5px; }
+  .signal-simple .transport { gap: 8px; font-size: 10px; }
+  .signal-simple .transport > button { width: 44px; height: 44px; }
+  .listen-modes { width: 100%; margin: 12px 0; gap: 7px; }
+  .listen-modes button { width: 100%; min-height: 54px; padding: 9px 12px; }
+  .signal-simple .listen-modes span { font-size: 10px; }
+  .signal-simple .listen-modes small { margin-top: 3px; font-size: 8px; }
+  .signal-simple .console .transcript { width: 100%; padding: 12px; }
+  .transcript > div:first-child { gap: 8px; }
+  .signal-simple .transcript textarea { width: 100%; min-height: 150px; padding: 12px; font-size: 16px; line-height: 1.45; }
+  .transcript-actions { width: 100%; gap: 7px; }
+  .signal-simple .transcript-actions button { width: 100%; padding: 10px 6px; font-size: 9px; }
+
+  /* Evidence Room and Verb Heist: constrain every work area to the viewport. */
+  .er-stage, .er-dossier-open, .dossier-content, .dossier-workspace,
+  .heist-layout, .safe-side, .task-panel { width: 100%; max-width: 100%; overflow: hidden; }
+  .evidence-grid, .description-list, .event-pool, .timeline-strip,
+  .suspect-grid, .dossier-grid, .case-evidence, .clue-options { width: 100%; }
+  .evidence-card, .description-list button, .event-pool button,
+  .suspect-card, .dossier-person, .clue-options button { max-width: 100%; }
+  .witness-file, .witness-record, .case-text, .er-deduction blockquote { max-width: 100%; }
+  .er-deduction blockquote { margin: 18px 0; padding: 16px 14px; font-size: 20px; }
+  .safe-shell { width: min(100%, 310px); }
+  .answer-row { width: 100%; }
+  .answer-row input { width: 1px; }
+  .answer-row button { flex: 0 0 auto; padding-inline: 14px; }
+}
