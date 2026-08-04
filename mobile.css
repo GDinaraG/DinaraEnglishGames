@@ -17,9 +17,9 @@
   .brand .seal { width: 40px; height: 40px; flex: 0 0 40px; font-size: 25px; }
   .brand b { display: block; font-size: clamp(17px, 5vw, 20px); white-space: nowrap; }
   .brand small { font-size: 9px; }
-  header .login { flex: 0 1 auto; min-width: 44px; max-width: 112px; padding: 4px; gap: 7px; }
-  header .login img { width: 40px; height: 40px; flex-basis: 40px; }
-  header .login span { overflow: hidden; font-size: 12px; text-overflow: ellipsis; }
+  header .login { flex: 0 0 auto; min-width: 0; max-width: 118px; padding: 3px 4px; gap: 6px; }
+  header .login img { width: 36px; height: 36px; flex-basis: 36px; }
+  header .login span { display: inline !important; overflow: hidden; font-size: 11px; white-space: nowrap; text-overflow: ellipsis; }
 
   .hero {
     min-height: 100svh;
@@ -156,7 +156,7 @@
 }
 
 @media (max-width: 380px) {
-  header .login span, .brand small { display: none; }
+  .brand small { display: none; }
   .hero h1 { font-size: 39px; }
   .case-inner { grid-template-columns: 34% minmax(0, 1fr); gap: 10px; }
   .case-copy h3 { font-size: 19px; }
