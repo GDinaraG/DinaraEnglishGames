@@ -56,15 +56,15 @@
   function start(el, onClose) {
     host = el;
     closeFn = onClose;
-    s = { stage: 0, score: 0, dossier: null, selectedEvidence: null, selectedDescription: null, matched: new Set(), statement: 0, chosenWord: '', deductionStep: 0, clueSelection: new Set(), feedback: '', kind: '' };
+    s = { stage: 0, dossier: null, selectedEvidence: null, selectedDescription: null, matched: new Set(), statement: 0, chosenWord: '', deductionStep: 0, clueSelection: new Set(), feedback: '', kind: '' };
     render();
   }
 
   function header() {
-    const titles = ['ДОПУСК К МАТЕРИАЛАМ', 'ЭТАП 1 · УЛИКИ', 'ЭТАП 2 · ПОКАЗАНИЯ СВИДЕТЕЛЕЙ', 'ЭТАП 3 · КТО ГОВОРИТ НЕПРАВДУ?', 'ДЕЛО ЗАВЕРШЕНО'];
+    const titles = ['ГЛАВА 3 · ФИНАЛ РАССЛЕДОВАНИЯ', 'ГЛАВА 3 · ДОСЬЕ', 'ГЛАВА 3 · ПОКАЗАНИЯ', 'ГЛАВА 3 · ВЫВОД', 'ДЕЛО ЗАВЕРШЕНО'];
     const activePerson = s.stage === 1 && s.dossier !== null ? witnesses[s.dossier] : null;
-    const stageLabel = activePerson ? `<span class="er-active-witness"><img src="${activePerson.image}" alt=""><b>ЭТАП 1 · УЛИКИ</b><em>${esc(activePerson.name)}</em></span>` : `<span>${titles[s.stage]}</span>`;
-    return `<header class="er-head"><div><b>THE EVIDENCE ROOM</b><small>CASE No. 014</small></div>${stageLabel}<div>SCORE <b>${s.score}</b></div></header>`;
+    const stageLabel = activePerson ? `<span class="er-active-witness"><img src="${activePerson.image}" alt=""><b>ГЛАВА 3 · ДОСЬЕ</b><em>${esc(activePerson.name)}</em></span>` : `<span>${titles[s.stage]}</span>`;
+    return `<header class="er-head"><div><b>THE EVIDENCE ROOM</b><small>CASE No. 001 · ALEX CARTER</small></div>${stageLabel}</header>`;
   }
 
   function render() {
@@ -74,7 +74,7 @@
   }
 
   function intro() {
-    return `<main class="er-intro"><div><p>CASE 014 · ФИНАЛ FILE 001</p><h2>Алекс не добрался до вокзала</h2><span>Улики из школьного архива привели обратно в школу. Здесь оставались три человека: библиотекарь Анна Рид, завхоз Марк Белл и охранник Лео Грант. Каждый рассказал свою версию вечера — но одна противоречит найденным предметам.</span><div class="case-task"><b>Твоя задача</b><span>Изучи материалы, восстанови показания свидетелей и найди противоречие.</span></div><button data-action="begin">ОТКРЫТЬ ДОСЬЕ СВИДЕТЕЛЕЙ</button></div></main>`;
+    return `<main class="er-intro"><div><p>CASE No. 001 · ALEX CARTER</p><h2>Алекс не добрался до вокзала</h2><span>Улики из школьного архива привели обратно в школу. Здесь оставались три человека: библиотекарь Анна Рид, завхоз Марк Белл и охранник Лео Грант. Каждый рассказал свою версию вечера — но одна противоречит найденным предметам.</span><div class="case-task"><b>Твоя задача</b><span>Изучи материалы, восстанови показания свидетелей и найди противоречие.</span></div><button data-action="begin">ОТКРЫТЬ ДОСЬЕ СВИДЕТЕЛЕЙ</button></div></main>`;
   }
 
   function matchStage() {
@@ -92,7 +92,7 @@
 
   function dossierDesk() {
     const allDone = witnesses.every((_, i) => dossierDone(i));
-    return `<main class="er-stage er-dossier-desk"><section class="er-copy"><h2>Кого изучить первым?</h2><span>Открой досье в любом порядке. Внутри - предметы и записи, связанные только с этим человеком.</span></section><div class="dossier-grid">${witnesses.map((person, i) => `<button class="dossier-person ${dossierDone(i) ? 'reviewed' : ''}" data-dossier="${i}"><img src="${person.image}" alt="${esc(person.name)}"><span><small>${person.role}</small><b>${esc(person.name)}</b><em>${esc(dossierNotes[i].role)}</em>${dossierDone(i) ? '<i>✓</i>' : ''}</span></button>`).join('')}</div><p class="dossier-progress">Изучено досье: ${witnesses.filter((_, i) => dossierDone(i)).length} / 3</p>${allDone ? '<button class="er-confirm" data-action="to-statements">ПЕРЕЙТИ К ПОКАЗАНИЯМ</button>' : ''}${feedback()}</main>`;
+    return `<main class="er-stage er-dossier-desk"><section class="er-copy"><h2>Кого изучить первым?</h2></section><div class="dossier-grid">${witnesses.map((person, i) => `<button class="dossier-person ${dossierDone(i) ? 'reviewed' : ''}" data-dossier="${i}"><img src="${person.image}" alt="${esc(person.name)}"><span><small>${person.role}</small><b>${esc(person.name)}</b><em>${esc(dossierNotes[i].role)}</em>${dossierDone(i) ? '<i>✓</i>' : ''}</span></button>`).join('')}</div><p class="dossier-progress">Изучено досье: ${witnesses.filter((_, i) => dossierDone(i)).length} / 3</p>${allDone ? '<button class="er-confirm" data-action="to-statements">ПЕРЕЙТИ К ПОКАЗАНИЯМ</button>' : ''}${feedback()}</main>`;
   }
 
   function dossierDone(owner) { return evidence.filter(item => item.owner === owner).every(item => s.matched.has(evidence.indexOf(item))); }
@@ -172,7 +172,7 @@
   function matchPair(evidenceIndex, descriptionIndex) {
     if (s.matched.has(evidenceIndex) || s.matched.has(descriptionIndex)) return;
     if (evidenceIndex === descriptionIndex) {
-      s.matched.add(evidenceIndex); s.score += 100; clearPairSelection();
+      s.matched.add(evidenceIndex); clearPairSelection();
       message('Улика добавлена в материалы дела.', 'good');
     } else {
       clearPairSelection();
@@ -184,7 +184,7 @@
     const task = testimonyTasks[s.statement];
     if (!s.chosenWord) { message('Сначала выбери слово.', 'bad'); return; }
     if (s.chosenWord === task.answer) {
-      s.score += 100; message('Показание восстановлено.', 'good');
+      message('Показание восстановлено.', 'good');
       setTimeout(() => { s.statement++; s.chosenWord = ''; s.feedback = ''; if (s.statement >= testimonyTasks.length) s.stage = 3; render(); }, 550);
     } else message('Слово не подходит к этой фразе. Выбери другое.', 'bad');
   }
@@ -194,19 +194,19 @@
       const hints = index === 0 ? 'Запись библиотеки подтверждает слова Анны: карточку использовали в 6:20.' : 'Время открытия двери совпадает с показанием Лео: 6:37.';
       message(hints, 'bad'); return;
     }
-    s.score += 200; s.deductionStep = 1; s.feedback = ''; render();
+    s.deductionStep = 1; s.feedback = ''; render();
   }
 
   function checkClues() {
     if (s.clueSelection.size !== 2) { message('Выбери ровно две улики.', 'bad'); return; }
     if (s.clueSelection.has('key') && s.clueSelection.has('gloves')) {
-      s.score += 200; s.deductionStep = 2; s.feedback = ''; render();
+      s.deductionStep = 2; s.feedback = ''; render();
     } else message('Эти предметы не доказывают, что Марк был у старой архивной комнаты.', 'bad');
   }
 
   function checkPlace(place) {
     if (place !== 'archive') { message('Улики ведут в другое место. Вспомни ключ №17 и пыль на перчатках.', 'bad'); return; }
-    s.score += 300; s.stage = 4;
+    s.stage = 4;
     localStorage.setItem('evidenceRoomComplete', 'yes');
     window.dispatchEvent(new Event('evidence-room-complete'));
     render();
@@ -216,7 +216,7 @@
 
   function complete() {
     const name = (localStorage.getItem('detectiveName') || '').trim();
-    return `<main class="er-complete"><strong>Дело завершено · ${s.score} очков</strong><h2>Алекс найден,<br>${name ? `детектив ${esc(name)}` : 'детектив'}!</h2><span><b>Mark lied about his movements.</b><br>The receipt exposed the lie. Key number 17 and the dusty gloves led to the old archive room.</span><p class="er-conclusion">Алекса нашли в запертой архивной комнате. Билет оказался ложным следом: он собирался уехать, но встреча у комнаты 17 изменила его планы.</p><div><button data-action="restart">ПРОЙТИ ЕЩЁ РАЗ</button><button data-action="close">ВЕРНУТЬСЯ К ДЕЛАМ</button></div></main>`;
+    return `<main class="er-complete"><strong>ДЕЛО ЗАВЕРШЕНО</strong><h2>Алекс найден,<br>${name ? `детектив ${esc(name)}` : 'детектив'}!</h2><span><b>Mark lied about his movements.</b><br>The receipt exposed the lie. Key number 17 and the dusty gloves led to the old archive room.</span><p class="er-conclusion">Алекса нашли в запертой архивной комнате. Билет оказался ложным следом: он собирался уехать, но встреча у комнаты 17 изменила его планы.</p><div><button data-action="restart">ПРОЙТИ ЕЩЁ РАЗ</button><button data-action="close">ВЕРНУТЬСЯ К ДЕЛАМ</button></div></main>`;
   }
 
   window.EvidenceRoom = { start };
