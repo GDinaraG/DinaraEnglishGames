@@ -197,7 +197,7 @@
 
 /* Exact interaction cleanup and corrected clue 06 */
 .pf-ladder:before,.pf-ladder.near:before{display:none!important;content:none!important;border:0!important;background:none!important}
-.pf-guard:after{left:55px!important;top:63px!important;height:22px!important}
+.pf-guard:after{left:55px!important;top:60px!important;height:22px!important}
 .pf-reward-image.item-5{background-image:url('../assets/missing-student/alex-corridor-cctv.png')!important;background-size:cover!important;background-position:center!important}
 .pf-inventory button.item-5{background-image:url('../assets/missing-student/alex-corridor-cctv.png')!important;background-size:cover!important;background-position:center!important}
 .ms-levels .single-operation{grid-template-columns:1fr!important;width:min(520px,100%)!important}.ms-levels .single-operation button{width:100%}
