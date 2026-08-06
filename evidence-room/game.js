@@ -1,12 +1,12 @@
 (function () {
   const evidence = [
-    { owner: 2, name: 'Torn train ticket', desc: 'Leo found it by the side door. It shows that the student planned to leave after seven.', pos: '0% 0%' },
-    { owner: 0, name: 'Wet umbrella', desc: 'Anna found it inside the library after the student disappeared.', pos: '100% 0%' },
-    { owner: 0, name: 'Library card', desc: 'Anna’s record shows that the student used it at 6:20 p.m.', pos: '0% 100%' },
+    { owner: 2, name: 'Torn train ticket', desc: 'Leo found it by the side door. It shows that Alex planned to leave after seven.', pos: '0% 0%' },
+    { owner: 0, name: 'Wet umbrella', desc: 'Anna found it inside the library after Alex disappeared.', pos: '100% 0%' },
+    { owner: 0, name: 'Library card', desc: 'Anna’s record shows that Alex used it at 6:20 p.m.', pos: '0% 100%' },
     { owner: 0, name: 'Dark-red lipstick', desc: 'Anna keeps it in her handbag and wore it at the school concert.', sheet: 'assets/evidence-items-anna.png', pos: '0% 0%' },
     { owner: 0, name: 'Reading glasses', desc: 'She uses them when she checks names and times in library records.', sheet: 'assets/evidence-items-anna.png', pos: '100% 0%' },
     { owner: 0, name: 'Fountain pen', desc: 'Anna uses it to write short notes in the library log.', sheet: 'assets/evidence-items-anna.png', pos: '0% 100%' },
-    { owner: 0, name: 'Flower bookmark', desc: 'The missing student gave it to Anna last spring.', sheet: 'assets/evidence-items-anna.png', pos: '100% 100%' },
+    { owner: 0, name: 'Flower bookmark', desc: 'Alex gave it to Anna last spring.', sheet: 'assets/evidence-items-anna.png', pos: '100% 100%' },
     { owner: 1, name: 'Key number 17', desc: 'It was issued to Mark and opens the old archive room in the science wing.', pos: '100% 100%' },
     { owner: 1, name: 'Café receipt', desc: 'It belongs to Mark and records a purchase across town at 6:10 p.m.', receipt: true },
     { owner: 1, name: 'Work gloves', desc: 'There is fresh grey dust from the old science wing on them.', sheet: 'assets/evidence-items-mark.png', pos: '0% 0%' },
@@ -74,15 +74,16 @@
   }
 
   function intro() {
-    return `<main class="er-intro"><div><p>CASE 014 · ТРИ СВИДЕТЕЛЯ</p><h2>Студент исчез после занятий</h2><span>В школе оставались три человека: библиотекарь Анна Рид, завхоз Марк Белл и охранник Лео Грант. Каждый рассказал свою версию вечера - но одна из них противоречит найденным уликам.</span><div class="case-task"><b>Твоя задача</b><span>Сначала изучи материалы каждого свидетеля. Затем восстанови их показания на английском и определи, кто говорит неправду.</span></div><button data-action="begin">ОТКРЫТЬ ДОСЬЕ СВИДЕТЕЛЕЙ</button></div></main>`;
+    return `<main class="er-intro"><div><p>CASE 014 · ФИНАЛ FILE 001</p><h2>Алекс не добрался до вокзала</h2><span>Улики из школьного архива привели обратно в школу. Здесь оставались три человека: библиотекарь Анна Рид, завхоз Марк Белл и охранник Лео Грант. Каждый рассказал свою версию вечера — но одна противоречит найденным предметам.</span><div class="case-task"><b>Твоя задача</b><span>Изучи материалы, восстанови показания свидетелей и найди противоречие.</span></div><button data-action="begin">ОТКРЫТЬ ДОСЬЕ СВИДЕТЕЛЕЙ</button></div></main>`;
   }
 
   function matchStage() {
     if (s.dossier === null) return dossierDesk();
     const person = witnesses[s.dossier];
+    const phoneMessage = window.SignalIntercept?.getEvidence?.()[s.dossier];
     const items = evidence.map((item, index) => ({ ...item, index })).filter(item => item.owner === s.dossier);
     const done = items.every(item => s.matched.has(item.index));
-    return `<main class="er-stage er-match er-dossier-open"><div class="dossier-content"><div class="dossier-toolbar"><button class="dossier-back" data-action="back-dossiers">← ВСЕ СВИДЕТЕЛИ</button><span>Сопоставлено: <b>${items.filter(item => s.matched.has(item.index)).length} / ${items.length}</b></span></div><section class="er-copy"><h3>Материалы свидетеля</h3><span>Соедини каждый предмет с подходящим английским описанием.</span></section><div class="dossier-workspace"><div class="evidence-grid dossier-evidence">${items.map(item => `<button class="evidence-card ${s.selectedEvidence === item.index ? 'selected' : ''} ${s.matched.has(item.index) ? 'matched' : ''}" data-evidence="${item.index}"><i class="${item.receipt ? 'receipt' : ''}" style="${itemStyle(item)}"></i><b>${esc(item.name)}</b></button>`).join('')}</div><div class="description-list dossier-descriptions">${descriptionsFor(s.dossier).map(item => `<button data-description="${item.index}" class="${s.selectedDescription === item.index ? 'selected' : ''} ${s.matched.has(item.index) ? 'matched' : ''}">${esc(item.desc)}</button>`).join('')}</div></div>${done ? '<button class="er-confirm" data-action="back-dossiers">ДОСЬЕ ИЗУЧЕНО</button>' : ''}${feedback()}</div></main>`;
+    return `<main class="er-stage er-match er-dossier-open"><div class="dossier-content"><div class="dossier-toolbar"><button class="dossier-back" data-action="back-dossiers">← ВСЕ СВИДЕТЕЛИ</button><span>Сопоставлено: <b>${items.filter(item => s.matched.has(item.index)).length} / ${items.length}</b></span></div><section class="er-copy"><h3>Материалы свидетеля</h3><span>Сопоставь предметы, сообщение из телефона Алекса и последующее показание.</span></section>${phoneMessage?.found?`<article class="phone-record"><img src="${phoneMessage.image}" alt="${esc(person.name)}"><div><small>СООБЩЕНИЕ ИЗ ТЕЛЕФОНА АЛЕКСА</small><q>${esc(phoneMessage.text)}</q><b>${esc(phoneMessage.note)}</b></div></article>`:'<article class="phone-record missing"><div><small>СООБЩЕНИЕ ИЗ ТЕЛЕФОНА АЛЕКСА</small><b>Голосовое ещё не восстановлено</b></div></article>'}<div class="dossier-workspace"><div class="evidence-grid dossier-evidence">${items.map(item => `<button class="evidence-card ${s.selectedEvidence === item.index ? 'selected' : ''} ${s.matched.has(item.index) ? 'matched' : ''}" data-evidence="${item.index}"><i class="${item.receipt ? 'receipt' : ''}" style="${itemStyle(item)}"></i><b>${esc(item.name)}</b></button>`).join('')}</div><div class="description-list dossier-descriptions">${descriptionsFor(s.dossier).map(item => `<button data-description="${item.index}" class="${s.selectedDescription === item.index ? 'selected' : ''} ${s.matched.has(item.index) ? 'matched' : ''}">${esc(item.desc)}</button>`).join('')}</div></div>${done ? '<button class="er-confirm" data-action="back-dossiers">ДОСЬЕ ИЗУЧЕНО</button>' : ''}${feedback()}</div></main>`;
   }
 
   function itemStyle(item) {
@@ -215,7 +216,7 @@
 
   function complete() {
     const name = (localStorage.getItem('detectiveName') || '').trim();
-    return `<main class="er-complete"><strong>Дело завершено · ${s.score} очков</strong><h2>Студент найден,<br>${name ? `детектив ${esc(name)}` : 'детектив'}!</h2><span><b>Mark lied about his movements.</b><br>The receipt exposed the lie. Key number 17 and the dusty gloves led to the old archive room.</span><p class="er-conclusion">Студента нашли в запертой архивной комнате. Марк скрыл правду, но цепочка улик восстановила события вечера.</p><div><button data-action="restart">ПРОЙТИ ЕЩЁ РАЗ</button><button data-action="close">ВЕРНУТЬСЯ К ДЕЛАМ</button></div></main>`;
+    return `<main class="er-complete"><strong>Дело завершено · ${s.score} очков</strong><h2>Алекс найден,<br>${name ? `детектив ${esc(name)}` : 'детектив'}!</h2><span><b>Mark lied about his movements.</b><br>The receipt exposed the lie. Key number 17 and the dusty gloves led to the old archive room.</span><p class="er-conclusion">Алекса нашли в запертой архивной комнате. Билет оказался ложным следом: он собирался уехать, но встреча у комнаты 17 изменила его планы.</p><div><button data-action="restart">ПРОЙТИ ЕЩЁ РАЗ</button><button data-action="close">ВЕРНУТЬСЯ К ДЕЛАМ</button></div></main>`;
   }
 
   window.EvidenceRoom = { start };

@@ -155,6 +155,32 @@
   .question-panel, .message-complete { padding: 28px var(--mobile-pad); }
 }
 
+/* Mobile platform camera: preserve the archive geometry instead of squeezing it. */
+@media (max-width: 700px) {
+  .ms-platform-layout, .platform-shell { width: 100%; overflow: hidden; }
+  .platform-viewport { width: 100%; min-height: calc(100dvh - 132px); overflow: hidden; }
+  .platform-world {
+    right: auto !important;
+    width: 960px !important;
+    max-width: none !important;
+    background-size: 100% 100% !important;
+    background-position: center !important;
+    will-change: transform;
+  }
+  .pf-player, .pf-guard { width: 54px; height: 91px; }
+  .pf-guard:after { left: 45px !important; top: 24px !important; width: 185px !important; height: 90px !important; }
+  .pf-locker { width: 72px; height: 82px; }
+  .pf-touch { position: fixed; z-index: 90; right: 7px; bottom: max(7px, env(safe-area-inset-bottom)); left: 7px; }
+  .pf-touch button { min-width: 48px; height: 48px; border-radius: 6px; }
+  .pf-message { right: 12px; bottom: 65px; max-width: none; font-size: 12px; line-height: 1.4; }
+
+  .case-collection .case-carousel { padding-inline: 0 !important; }
+  .case-collection .case-grid .dossier { flex-basis: calc(100% - 2 * var(--mobile-pad)); }
+  .alex-case-head { min-width: 0; }
+  .alex-case-head > div:first-child { min-width: 0; }
+  .alex-case-head h2 { overflow-wrap: normal; word-break: normal; }
+}
+
 /* Desktop sign-in affordance: bright, borderless and clearly interactive. */
 @media (min-width: 701px) {
   header .login {
@@ -395,4 +421,34 @@
     background: #e0c083;
     transform: translateY(-50%) scale(.94);
   }
+}
+
+/* Narrow phones: keep every control inside the screen without shrinking text. */
+@media (max-width: 380px) {
+  .phone-game .phone-workspace > .phone-device {
+    width: calc(100vw - 10px) !important;
+    border-radius: 34px;
+  }
+  .phone-game .phone-side { width: calc(100vw - 16px) !important; }
+  .phone-game .message-thread { padding-inline: 14px !important; }
+  .phone-game .voice-message { width: min(245px, 88%) !important; max-width: 88% !important; }
+  .phone-game .phone-case-head > button { max-width: 106px; white-space: normal; line-height: 1.15; }
+  .pf-touch { gap: 3px; }
+  .pf-touch button { min-width: 44px; width: 44px; padding: 0; }
+}
+
+/* Short landscape screens must scroll vertically; no panel may be clipped. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .game,
+  .game.missing-modal,
+  .game.signal-modal,
+  .game.evidence-modal { height: 100dvh; max-height: 100dvh; overflow-y: auto; }
+  .phone-intro { min-height: 100dvh; grid-template-columns: 48% 52%; }
+  .phone-hand-art { min-height: 100dvh; }
+  .phone-intro-copy { padding: 36px 46px 28px 12px; }
+  .phone-intro-copy h2 { font-size: 44px; }
+  .phone-stage, .phone-game { min-height: 100dvh; }
+  .phone-case-head { position: sticky !important; top: 0 !important; z-index: 30 !important; }
+  .er-intro, .er-stage, .er-complete { min-height: calc(100dvh - 72px); }
+  .pf-lock-panel, .pf-reward, .pf-tutorial { overflow-y: auto; align-content: start; }
 }
