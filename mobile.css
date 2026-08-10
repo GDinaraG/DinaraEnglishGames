@@ -17,7 +17,10 @@
   .brand .seal { width: 40px; height: 40px; flex: 0 0 40px; font-size: 25px; }
   .brand b { display: block; font-size: clamp(17px, 5vw, 20px); white-space: nowrap; }
   .brand small { font-size: 9px; }
-  header .login { flex: 0 0 auto; min-width: 0; max-width: 118px; padding: 3px 4px; gap: 6px; }
+  .header-actions { margin-left: auto; gap: 5px; }
+  .case-music-toggle { min-width: 44px; min-height: 44px; padding: 0 8px; gap: 4px; }
+  .case-music-toggle .music-name { display: none; }
+  header .login { flex: 0 0 auto; min-width: 0; max-width: 94px; padding: 3px 4px; gap: 6px; }
   header .login img { width: 36px; height: 36px; flex-basis: 36px; }
   header .login span { display: inline !important; overflow: hidden; font-size: 11px; white-space: nowrap; text-overflow: ellipsis; }
 
@@ -97,6 +100,8 @@
   .ms-head > span { display: none; }
   .ms-head > div:last-child { text-align: right; }
   .ms-game .ms-head button[data-action="levels"] { padding: 8px; font-size: 10px; }
+  .ms-music-toggle { margin-right: 5px!important; padding: 8px!important; }
+  .ms-music-toggle span { display: none; }
   .ms-layout { display: flex !important; flex-direction: column; min-height: calc(100dvh - 76px); }
   .ms-layout aside { width: auto; padding: 16px var(--mobile-pad); }
   .ms-task, .ms-game.level-bg .ms-task, .ms-game.level-2 .ms-task { padding: 24px var(--mobile-pad) 34px; }
@@ -435,6 +440,32 @@
   .phone-game .phone-case-head > button { max-width: 106px; white-space: normal; line-height: 1.15; }
   .pf-touch { gap: 3px; }
   .pf-touch button { min-width: 44px; width: 44px; padding: 0; }
+}
+
+@media (max-width: 700px) {
+  .cases { padding-top: 30px; padding-bottom: 28px; }
+  .alex-case-head { min-height: 118px; }
+  .case-collection .case-materials { padding-top: 20px; padding-bottom: 30px; }
+  .materials-head { margin-bottom: 16px; }
+  footer { padding-top: 18px; padding-bottom: 18px; }
+
+  .phone-game .inline-detective-note {
+    width: auto;
+    max-width: calc(100% - 8px) !important;
+    margin-right: 8px;
+  }
+  .phone-game .inline-detective-note button {
+    min-width: 112px;
+    min-height: 42px;
+    padding: 9px 12px;
+    font-size: 10px;
+    touch-action: manipulation;
+  }
+  .phone-stage, .phone-results,
+  .ms-intro, .ms-levels, .ms-clue-reveal, .ms-complete {
+    background-position: center !important;
+    background-size: cover !important;
+  }
 }
 
 /* Short landscape screens must scroll vertically; no panel may be clipped. */

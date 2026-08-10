@@ -25,6 +25,7 @@
 .ms-game .ms-head button[data-action="levels"]{padding:10px 14px;border-color:#b58c45;background:linear-gradient(135deg,#3b2c17,#1b150d);color:#efd18c;font-weight:700;letter-spacing:.5px;box-shadow:0 0 0 1px #d0a55420,0 4px 13px #0008;transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease}
 .ms-game .ms-head button[data-action="levels"]:hover{transform:translateY(-2px);border-color:#e0b965;background:linear-gradient(135deg,#5a4220,#2a1e10);box-shadow:0 0 14px #c99b4540,0 7px 16px #0009}
 .ms-game .ms-head button[data-action="levels"]:active{transform:translateY(0) scale(.98)}
+.ms-music-toggle{margin-right:10px!important;padding:10px 12px!important;display:inline-flex;align-items:center;gap:7px;border-color:#66502d!important;color:#c8a963!important;font:9px Inter,sans-serif!important;letter-spacing:1px}.ms-music-toggle.off{opacity:.58;box-shadow:none!important;border-color:#3b352c!important;color:#81786c!important;background:none!important}.ms-music-toggle .music-note{position:relative;display:inline-grid!important;place-items:center;width:17px;color:inherit;font:normal 17px/1 Inter}.ms-music-toggle .music-note.muted:after{content:'';position:absolute;width:19px;height:1.5px;background:#81786c;transform:rotate(-48deg);box-shadow:0 0 2px #080706}
 .ms-game.level-2 .ms-task{padding-top:48px;background:linear-gradient(145deg,#100e0ba6,#080706b8);backdrop-filter:blur(3px)}
 .ms-game.level-2 .letter-help{margin:0 0 15px;padding:6px 9px;font-size:11px;line-height:1.35}
 .ms-game.level-2 .ms-task h2{margin:0 0 18px}
@@ -203,4 +204,54 @@
 .pf-reward-image.item-6,.pf-inventory button.item-6{background-image:url('../assets/signal-intercept/alex-phone-case-v1.png')!important;background-size:cover!important;background-position:center!important}
 .ms-levels .single-operation{grid-template-columns:1fr!important;width:min(520px,100%)!important}.ms-levels .single-operation button{width:100%}
 .ms-levels{min-height:606px!important;padding:24px 30px 32px!important;align-content:center!important;gap:20px}.ms-levels h2{margin:0!important;font-size:48px!important;line-height:1.02!important}.ms-levels .single-operation{width:min(610px,100%)!important}.ms-levels .single-operation button{min-height:0!important;padding:236px 26px 23px!important;display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:24px}.ms-levels .single-operation button>img{height:214px!important;object-fit:cover!important;object-position:center 48%!important}.ms-levels .single-operation button>b{grid-column:1/-1;margin:0 0 8px!important;font-size:28px!important}.ms-levels .single-operation button>span{min-height:0!important;color:#d0c5b4!important;font-size:16px!important;line-height:1.45!important}.archive-enter{align-self:center;padding:10px 13px;border:1px solid #8c6b38;color:#d6b56f;font-size:10px;letter-spacing:1.4px;white-space:nowrap}.ms-levels .single-operation button:hover .archive-enter{background:#b58e48;color:#15100a}@media(max-width:650px){.ms-levels{padding:22px 16px 28px!important;gap:16px}.ms-levels h2{font-size:36px!important}.ms-levels .single-operation button{padding:196px 20px 20px!important;grid-template-columns:1fr}.ms-levels .single-operation button>img{height:176px!important}.archive-enter{margin-top:14px;justify-self:start}}
-.pf-tutorial>button:after{content:'НАЧАТЬ ГЛАВУ'!important}
+.pf-tutorial>button:after{content:'ПРОНИКНУТЬ В АРХИВ'!important}
+@media(min-width:701px){.ms-game,.ms-complete{min-height:640px}.ms-head{height:68px}.ms-levels,.ms-layout{min-height:572px}.ms-layout aside{padding-top:26px;padding-bottom:26px}.lock-grid{margin-top:25px;margin-bottom:25px}.ms-task{padding-top:42px;padding-bottom:42px}}
+.ms-intro .ms-confirm{cursor:pointer;box-shadow:0 9px 24px #0008,0 0 0 #c89b4533;transition:transform .18s ease,filter .18s ease,box-shadow .18s ease}.ms-intro .ms-confirm:hover{transform:translateY(-3px);filter:brightness(1.09);box-shadow:0 13px 29px #000b,0 0 18px #c89b453d}.ms-intro .ms-confirm:active{transform:translateY(-1px) scale(.985);filter:brightness(.98)}
+
+/* Generated character animation sheets. */
+.pf-player,.pf-guard{width:112px!important;height:112px!important;background-repeat:no-repeat!important;background-position-x:0;background-position-y:0!important;filter:drop-shadow(0 8px 7px #000b)}
+.pf-player{background-image:url('../assets/missing-student/character-frames/female-r0-f0.png')!important;background-size:contain!important;animation:none!important}
+.pf-player.male{background-image:url('../assets/missing-student/character-frames/male-r0-f0.png')!important}
+.pf-player.walking{background-position-y:33.333%!important;animation:detectiveMove .94s steps(6) infinite}
+.pf-player.climbing{background-position-y:66.666%!important;animation:detectiveMove .9s steps(6) infinite;transition:bottom .5s ease-in-out}
+.pf-player.hidden.hiding{display:block!important;opacity:1!important;background-position-y:33.333%!important;animation:detectiveEnter .62s ease-in both}
+.pf-guard{width:115px!important;height:115px!important;background-image:url('../assets/missing-student/guard-sprites-v3.png')!important;background-size:800% 400%!important;animation:guardIdle 1.4s steps(7) infinite}
+.pf-guard.walking{background-position-y:33.333%!important;animation:guardMove .98s steps(7) infinite}
+.pf-guard.climbing{background-position-y:66.666%!important;animation:guardMove .82s steps(7) infinite!important}
+.pf-guard:after{left:91px!important;top:39px!important;width:235px!important;height:20px!important}
+.pf-hide.occupied{background-position:right center!important}
+@keyframes detectiveIdle{to{background-position-x:100%}}@keyframes detectiveMove{to{background-position-x:100%}}@keyframes detectiveEnter{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-34%) scale(.78)}}@keyframes guardIdle{to{background-position-x:100%}}@keyframes guardMove{to{background-position-x:100%}}
+@media(max-width:700px){.pf-player{width:86px!important;height:86px!important}.pf-guard{width:88px!important;height:88px!important}.pf-guard:after{left:70px!important;top:30px!important;width:155px!important;height:16px!important}}
+.pf-player,.pf-guard{transition-property:bottom,left!important;transition-duration:.35s,0s!important;transition-timing-function:ease,linear!important;will-change:left,bottom,background-position}
+.pf-player.climbing{transition-duration:.5s,0s!important}.pf-guard.climbing{transition-duration:.82s,0s!important}
+.pf-hide.occupied{background-position:left center!important}
+.pf-player.hidden,.pf-player.hidden.hiding{display:none!important;opacity:0!important;animation:none!important}
+.pf-player{overflow:hidden!important;contain:layout paint!important;will-change:auto!important;background-clip:border-box!important;backface-visibility:hidden}.pf-guard{overflow:visible!important;contain:none!important;will-change:auto!important;backface-visibility:hidden}
+.pf-player,.pf-player.walking,.pf-player.climbing,.pf-guard,.pf-guard.walking,.pf-guard.climbing{animation:none!important;background-position-x:var(--pf-frame-x,0%)!important}
+.pf-player,.pf-player.walking,.pf-player.climbing{background-size:contain!important;background-position-y:bottom!important}
+.pf-guard:after{left:100px!important;top:41px!important;transform-origin:0 50%!important}
+.pf-guard:not(.face-left):after{left:100px!important;top:41px!important}.pf-guard.face-left:after{left:92px!important;top:41px!important}
+@media(max-width:700px){.pf-guard:after{left:76px!important;top:31px!important}}
+@media(max-width:700px){.pf-guard:not(.face-left):after{left:76px!important;top:31px!important}.pf-guard.face-left:after{left:70px!important;top:31px!important}}
+
+/* The detective uses discrete, pre-cut frames. Keeping the artwork in a real
+   image element prevents old sprite-sheet positioning rules from exposing a
+   neighbouring frame. */
+.pf-player,.pf-player.male,.pf-player.walking,.pf-player.climbing{
+  background-image:none!important;
+  background-position-y:bottom!important;
+  overflow:visible!important;
+}
+.pf-player-frame{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+  pointer-events:none;
+  user-select:none;
+}
+
+/* Atmospheric art behind the dossier, operation selection and conclusions. */
+.ms-intro,.ms-levels,.ms-clue-reveal,.ms-complete{background:radial-gradient(circle at 34% 42%,#302719a8 0,#090806e8 58%,#050403f5 100%),url('../assets/missing-student/language-club-archive-v2.png') center/cover no-repeat!important}
+.pf-reward-card h2{margin:0 0 7px!important}.pf-reward-card p{margin-bottom:12px!important}.pf-reward-card button:after{content:none!important}.pf-deduction{margin-bottom:13px!important;padding-top:10px!important;padding-bottom:10px!important}

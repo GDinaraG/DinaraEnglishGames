@@ -6,6 +6,7 @@
 .alex-case-head>div:first-child>span{color:#bd9651;font-size:10px;letter-spacing:3px}
 .alex-case-head h2{margin:7px 0 3px;color:#eee1c9;font:50px/.95 'Cormorant Garamond'}
 .alex-case-head p{margin:0;color:#9f9380;font-size:14px}
+.case-reset{margin-top:13px;padding:7px 10px;border:1px solid #5e4a31;background:#100d09;color:#9d8865;font:8px Inter,sans-serif;letter-spacing:1.2px;cursor:pointer;transition:.18s}.case-reset:hover{border-color:#b68b48;color:#dfbd77}.case-reset.confirm{border-color:#9b4037;background:#2a1210;color:#e9978e}
 .alex-case-person{display:flex;align-items:center;gap:15px;padding:8px 20px 8px 8px;border:1px solid #57442b;background:#100d09}
 .alex-case-person img{width:68px;height:78px;object-fit:cover;object-position:center top;filter:saturate(.78) sepia(.1)}
 .alex-case-person span{display:grid;gap:5px}
@@ -21,4 +22,14 @@
 .case-collection .materials-head h2{text-transform:none;font-size:34px}
 @media(max-width:1000px){.case-collection .case-grid .dossier{flex-basis:calc((100% - 24px)/2)}.case-stage-label{padding-left:46px;padding-right:46px}}
 @media(max-width:650px){.cases .cases-index-head h2{font-size:34px}.alex-case-head{padding:22px 18px;align-items:flex-start}.alex-case-head h2{font-size:38px}.alex-case-person{padding-right:9px}.alex-case-person img{width:50px;height:60px}.alex-case-person b{font-size:12px}.case-stage-label{padding:20px 36px 4px;display:block}.case-stage-label p{margin-top:6px}.case-collection .case-carousel{padding:0 36px}.case-collection .case-grid .dossier{flex-basis:92%}.case-collection .case-materials{padding:25px 18px 38px}}
-.home-evidence.item-6 i,.material-image.item-6{background-image:url('assets/signal-intercept/alex-phone-case-v1.png')!important;background-size:cover!important;background-position:center!important}
+.home-evidence.item-6.found i,.material-image.item-6{background-image:url('assets/signal-intercept/alex-phone-case-v1.png')!important;background-size:cover!important;background-position:center!important}
+.header-actions{display:flex;align-items:center;gap:12px;margin-left:auto}
+.case-music-toggle{min-height:42px;padding:0 14px;display:flex;align-items:center;gap:9px;border:1px solid #6b512b;background:linear-gradient(180deg,#17130d,#0d0b08);color:#c6a45f;font:10px Inter,sans-serif;letter-spacing:1.5px;cursor:pointer;box-shadow:inset 0 0 18px #c4971710;transition:.2s ease}
+.case-music-toggle:hover{border-color:#c29a50;color:#f0ce87}.case-music-toggle .music-note{font-size:18px;line-height:1}.case-music-toggle b{padding-left:8px;border-left:1px solid #514127;color:#e4c47e;font-size:9px}.case-music-toggle.off{color:#777064;border-color:#3b352c;box-shadow:none}.case-music-toggle.off b{color:#918779}
+.case-music-toggle .music-note{position:relative;display:inline-grid;place-items:center;width:18px}.case-music-toggle .music-note.muted:after{content:'';position:absolute;width:20px;height:1.5px;background:#777064;transform:rotate(-48deg);box-shadow:0 0 2px #080706}.case-music-toggle.off:hover{color:#a49a8b;border-color:#5b5041}
+.alex-case-head{min-height:132px;padding-top:20px;padding-bottom:20px}.case-collection .case-grid{padding-top:7px;padding-bottom:16px}.case-collection .case-materials{margin-top:6px;padding-top:24px;padding-bottom:32px}.case-collection .materials-head{margin-bottom:18px}@media(min-width:701px){.case-collection .dossier{min-height:374px}.case-collection .photo{height:205px}.case-collection .case-inner{margin-top:18px}.case-collection .dossier .case-copy p{margin-top:18px}.case-collection .home-evidence{height:145px}.case-collection .home-evidence i{height:92px}}
+
+/* The case index is part of the same investigation space, not a flat panel. */
+.case-collection{background:linear-gradient(145deg,#17130ddd,#090806f0 62%),url('assets/evidence-room-room.png') center/cover no-repeat!important}
+.alex-case-head{background:radial-gradient(circle at 72% 50%,#302417b8 0,transparent 45%),linear-gradient(#0c0a07dd,#0c0a07ed),url('assets/evidence-room-room.png') center/cover!important}
+.case-collection .case-materials{background:linear-gradient(180deg,#100d08e8,#080706f2)!important}
