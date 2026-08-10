@@ -21,3 +21,4 @@
 .case-collection .materials-head h2{text-transform:none;font-size:34px}
 @media(max-width:1000px){.case-collection .case-grid .dossier{flex-basis:calc((100% - 24px)/2)}.case-stage-label{padding-left:46px;padding-right:46px}}
 @media(max-width:650px){.cases .cases-index-head h2{font-size:34px}.alex-case-head{padding:22px 18px;align-items:flex-start}.alex-case-head h2{font-size:38px}.alex-case-person{padding-right:9px}.alex-case-person img{width:50px;height:60px}.alex-case-person b{font-size:12px}.case-stage-label{padding:20px 36px 4px;display:block}.case-stage-label p{margin-top:6px}.case-collection .case-carousel{padding:0 36px}.case-collection .case-grid .dossier{flex-basis:92%}.case-collection .case-materials{padding:25px 18px 38px}}
+.home-evidence.item-6 i,.material-image.item-6{background-image:url('assets/signal-intercept/alex-phone-case-v1.png')!important;background-size:cover!important;background-position:center!important}
