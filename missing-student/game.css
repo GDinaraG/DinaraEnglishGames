@@ -215,7 +215,7 @@
 .pf-player.walking{background-position-y:33.333%!important;animation:detectiveMove .94s steps(6) infinite}
 .pf-player.climbing{background-position-y:66.666%!important;animation:detectiveMove .9s steps(6) infinite;transition:bottom .5s ease-in-out}
 .pf-player.hidden.hiding{display:block!important;opacity:1!important;background-position-y:33.333%!important;animation:detectiveEnter .62s ease-in both}
-.pf-guard{width:115px!important;height:115px!important;background-image:url('../assets/missing-student/guard-sprites-v3.png')!important;background-size:800% 400%!important;animation:guardIdle 1.4s steps(7) infinite}
+.pf-guard{width:115px!important;height:115px!important;animation:none!important}
 .pf-guard.walking{background-position-y:33.333%!important;animation:guardMove .98s steps(7) infinite}
 .pf-guard.climbing{background-position-y:66.666%!important;animation:guardMove .82s steps(7) infinite!important}
 .pf-guard:after{left:91px!important;top:39px!important;width:235px!important;height:20px!important}
@@ -251,6 +251,12 @@
   pointer-events:none;
   user-select:none;
 }
+.pf-guard{background-image:none!important}
+.pf-guard-frame{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;pointer-events:none;user-select:none}
+.pf-guard-frame[hidden]{display:none}
+.pf-guard.climbing:after{opacity:0!important}
+.pf-guard:not(.face-left):after,.pf-guard.face-left:after{left:88px!important;top:41px!important}
+@media(max-width:700px){.pf-guard:not(.face-left):after,.pf-guard.face-left:after{left:67px!important;top:31px!important}}
 
 /* Atmospheric art behind the dossier, operation selection and conclusions. */
 .ms-intro,.ms-levels,.ms-clue-reveal,.ms-complete{background:radial-gradient(circle at 34% 42%,#302719a8 0,#090806e8 58%,#050403f5 100%),url('../assets/missing-student/language-club-archive-v2.png') center/cover no-repeat!important}

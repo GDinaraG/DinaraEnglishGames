@@ -56,7 +56,7 @@
   function start(el, onClose) {
     host = el;
     closeFn = onClose;
-    s = { stage: 0, dossier: null, selectedEvidence: null, selectedDescription: null, matched: new Set(), statement: 0, chosenWord: '', deductionStep: 0, clueSelection: new Set(), feedback: '', kind: '' };
+    s = { stage: 0, dossier: null, selectedEvidence: null, selectedDescription: null, matched: new Set(), statement: 0, chosenWord: '', deductionStep: 0, deductionUnlocked: 0, clueSelection: new Set(), feedback: '', kind: '' };
     render();
   }
 
@@ -114,11 +114,17 @@
   }
 
   function liarStage() {
-    return `<main class="er-stage er-liar"><section class="er-copy"><h2>Собери цепочку доказательств</h2><span>Ответь на три вопроса, чтобы найти студента и доказать, кто скрыл правду.</span></section><div class="deduction-progress"><i class="done">1</i><span></span><i class="${s.deductionStep > 0 ? 'done' : ''}">2</i><span></span><i class="${s.deductionStep > 1 ? 'done' : ''}">3</i></div>${deductionContent()}${feedback()}</main>`;
+    return `<main class="er-stage er-liar"><div class="deduction-progress"><i class="done">1</i><span></span><i class="${s.deductionUnlocked > 0 ? 'done' : ''}">2</i><span></span><i class="${s.deductionUnlocked > 1 ? 'done' : ''}">3</i></div>${deductionContent()}${deductionNavigation()}${feedback()}</main>`;
+  }
+
+  function deductionNavigation() {
+    const back = s.deductionStep > 0 ? '<button data-action="deduction-back">НАЗАД</button>' : '';
+    const next = s.deductionStep < s.deductionUnlocked ? '<button data-action="deduction-next">ДАЛЕЕ</button>' : '';
+    return back || next ? `<nav class="deduction-navigation">${back}${next}</nav>` : '';
   }
 
   function deductionContent() {
-    if (s.deductionStep === 0) return `<div class="deduction-panel"><small>ВОПРОС 1 / 3</small><h3>Whose statement contradicts the evidence?</h3><p>Чьё показание противоречит уликам?</p><div class="suspect-grid">${witnesses.map((witness, i) => `<button class="suspect-card" data-suspect="${i}"><img src="${witness.image}" alt="${esc(witness.name)}"><span><small>${witness.role}</small><b>${esc(witness.name)}</b><q>${esc(witness.full)}</q></span></button>`).join('')}</div></div>`;
+    if (s.deductionStep === 0) return `<div class="deduction-panel"><h3>Whose statement contradicts the evidence?</h3><p>Сравни показания с найденными предметами и выбери того, чья версия не выдерживает проверки.</p><div class="suspect-grid">${witnesses.map((witness, i) => `<button class="suspect-card" data-suspect="${i}"><img src="${witness.image}" alt="${esc(witness.name)}"><span><small>${witness.role}</small><b>${esc(witness.name)}</b><q>${esc(witness.full)}</q></span></button>`).join('')}</div></div>`;
     if (s.deductionStep === 1) {
       const clues = [
         ['receipt', 'Café receipt', 'It proves that Mark left the school.'],
@@ -126,9 +132,9 @@
         ['gloves', 'Dusty work gloves', 'Their dust came from the old science wing.'],
         ['lipstick', 'Dark-red lipstick', 'It belongs to Anna.']
       ];
-      return `<div class="deduction-panel"><small>ВОПРОС 2 / 3</small><h3>Which two objects connect Mark to the archive?</h3><p>Выбери две улики, которые связывают Марка со старой архивной комнатой.</p><div class="clue-options">${clues.map(clue => `<button data-clue="${clue[0]}" class="${s.clueSelection.has(clue[0]) ? 'selected' : ''}"><b>${clue[1]}</b><span>${clue[2]}</span></button>`).join('')}</div><button class="er-confirm" data-action="check-clues">ПРОВЕРИТЬ УЛИКИ</button></div>`;
+      return `<div class="deduction-panel"><h3>Which two objects connect Mark to the archive?</h3><p>Выбери две улики, которые связывают Марка со старой архивной комнатой.</p><div class="clue-options">${clues.map(clue => `<button data-clue="${clue[0]}" class="${s.clueSelection.has(clue[0]) ? 'selected' : ''}"><b>${clue[1]}</b><span>${clue[2]}</span></button>`).join('')}</div><button class="er-confirm" data-action="check-clues">ПРОВЕРИТЬ УЛИКИ</button></div>`;
     }
-    return `<div class="deduction-panel"><small>ВОПРОС 3 / 3</small><h3>Where should the detective search?</h3><p>Где нужно искать пропавшего студента?</p><div class="place-options"><button data-place="library">In the library</button><button data-place="archive">In the old archive room</button><button data-place="station">At the railway station</button></div></div>`;
+    return `<div class="deduction-panel"><h3>Where should the detective search?</h3><p>Укажи место, к которому одновременно ведут ключ №17, пыль со старого крыла и маршрут Алекса.</p><div class="place-options"><button data-place="library">In the library</button><button data-place="archive">In the old archive room</button><button data-place="station">At the railway station</button></div></div>`;
   }
 
   function feedback() { return `<p class="er-feedback ${s.kind}">${esc(s.feedback)}</p>`; }
@@ -163,6 +169,8 @@
     else if (action === 'to-statements') { s.stage = 2; s.feedback = ''; render(); }
     else if (action === 'check-word') checkWord();
     else if (action === 'check-clues') checkClues();
+    else if (action === 'deduction-back') { s.deductionStep = Math.max(0, s.deductionStep - 1); s.feedback = ''; render(); }
+    else if (action === 'deduction-next') { s.deductionStep = Math.min(s.deductionUnlocked, s.deductionStep + 1); s.feedback = ''; render(); }
     else if (action === 'restart') start(host, closeFn);
     else if (action === 'close') closeFn();
   }
@@ -173,7 +181,9 @@
     if (s.matched.has(evidenceIndex) || s.matched.has(descriptionIndex)) return;
     if (evidenceIndex === descriptionIndex) {
       s.matched.add(evidenceIndex); clearPairSelection();
-      message('Улика добавлена в материалы дела.', 'good');
+      s.feedback = '';
+      s.kind = '';
+      render();
     } else {
       clearPairSelection();
       message('Это не одна пара. Прочитай описание ещё раз и попробуй другое сочетание.', 'bad');
@@ -194,13 +204,13 @@
       const hints = index === 0 ? 'Запись библиотеки подтверждает слова Анны: карточку использовали в 6:20.' : 'Время открытия двери совпадает с показанием Лео: 6:37.';
       message(hints, 'bad'); return;
     }
-    s.deductionStep = 1; s.feedback = ''; render();
+    s.deductionUnlocked = Math.max(s.deductionUnlocked, 1); s.deductionStep = 1; s.feedback = ''; render();
   }
 
   function checkClues() {
     if (s.clueSelection.size !== 2) { message('Выбери ровно две улики.', 'bad'); return; }
     if (s.clueSelection.has('key') && s.clueSelection.has('gloves')) {
-      s.deductionStep = 2; s.feedback = ''; render();
+      s.deductionUnlocked = Math.max(s.deductionUnlocked, 2); s.deductionStep = 2; s.feedback = ''; render();
     } else message('Эти предметы не доказывают, что Марк был у старой архивной комнаты.', 'bad');
   }
 
