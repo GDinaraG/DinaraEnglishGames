@@ -1,4 +1,8 @@
 const http = require('http');
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
+const tls = require('tls');
 const { randomUUID } = require('crypto');
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -11,6 +15,28 @@ const ALLOWED_ORIGINS = new Set([
 
 let cachedAccessToken = '';
 let cachedAccessTokenExpiresAt = 0;
+const russianRootCa = fs.readFileSync(path.join(__dirname, 'certs', 'russian_trusted_root_ca_pem.crt'));
+const gigaChatAgent = new https.Agent({ ca: [...tls.rootCertificates, russianRootCa] });
+
+function requestJson(url, options = {}, body = '') {
+  return new Promise((resolve, reject) => {
+    const request = https.request(url, { ...options, agent: gigaChatAgent }, response => {
+      let responseBody = '';
+      response.setEncoding('utf8');
+      response.on('data', chunk => { responseBody += chunk; });
+      response.on('end', () => {
+        let data = {};
+        try { data = responseBody ? JSON.parse(responseBody) : {}; }
+        catch { return reject(new Error(`GIGACHAT_INVALID_RESPONSE_${response.statusCode}`)); }
+        resolve({ ok: response.statusCode >= 200 && response.statusCode < 300, status: response.statusCode, data });
+      });
+    });
+    request.setTimeout(30_000, () => request.destroy(new Error('GIGACHAT_TIMEOUT')));
+    request.on('error', error => reject(new Error(`GIGACHAT_NETWORK_${error.code || error.message}`)));
+    if (body) request.write(body);
+    request.end();
+  });
+}
 
 function setCorsHeaders(req, res) {
   const origin = req.headers.origin;
@@ -56,21 +82,22 @@ async function getGigaChatAccessToken() {
   const authKey = process.env.GIGACHAT_AUTH_KEY;
   if (!authKey) throw new Error('GIGACHAT_NOT_CONFIGURED');
 
-  const response = await fetch('https://ngw.devices.sberbank.ru:9443/api/v2/oauth', {
+  const formBody = new URLSearchParams({
+    scope: process.env.GIGACHAT_SCOPE || 'GIGACHAT_API_PERS',
+  }).toString();
+  const response = await requestJson('https://ngw.devices.sberbank.ru:9443/api/v2/oauth', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       Authorization: `Basic ${authKey}`,
       'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(formBody),
       RqUID: randomUUID(),
     },
-    body: new URLSearchParams({
-      scope: process.env.GIGACHAT_SCOPE || 'GIGACHAT_API_PERS',
-    }),
-  });
+  }, formBody);
 
   if (!response.ok) throw new Error(`GIGACHAT_AUTH_${response.status}`);
-  const data = await response.json();
+  const data = response.data;
   cachedAccessToken = data.access_token;
   cachedAccessTokenExpiresAt = Number(data.expires_at) || Date.now() + 29 * 60_000;
   return cachedAccessToken;
@@ -101,24 +128,25 @@ async function requestThomasReply(payload) {
     throw new Error('THOMAS_MESSAGE_REQUIRED');
   }
 
-  const response = await fetch('https://api.giga.chat/v1/chat/completions', {
+  const requestBody = JSON.stringify({
+    model: process.env.GIGACHAT_MODEL || 'GigaChat-2-Pro',
+    messages,
+    stream: false,
+    temperature: 0.65,
+    max_tokens: 220,
+  });
+  const response = await requestJson('https://api.giga.chat/v1/chat/completions', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(requestBody),
     },
-    body: JSON.stringify({
-      model: process.env.GIGACHAT_MODEL || 'GigaChat-2-Pro',
-      messages,
-      stream: false,
-      temperature: 0.65,
-      max_tokens: 220,
-    }),
-  });
+  }, requestBody);
 
   if (!response.ok) throw new Error(`GIGACHAT_CHAT_${response.status}`);
-  const data = await response.json();
+  const data = response.data;
   const reply = data.choices?.[0]?.message?.content?.trim();
   if (!reply) throw new Error('GIGACHAT_EMPTY_REPLY');
   return reply;
