@@ -416,6 +416,60 @@ footer{border-top:0!important}
 @media(max-width:1050px) and (min-width:701px){.thomas-interview{grid-template-columns:22% minmax(390px,1fr) 31%}.thomas-dialogue{margin:12px 10px}.thomas-caseboard{padding:12px 10px 12px 0}.thomas-message p{font-size:21px}.thomas-evidence button span{font-size:7px}}
 @media(max-width:700px){.thomas-interview{display:flex;flex-direction:column;overflow-y:auto}.thomas-stage{flex:0 0 210px}.thomas-dialogue{flex:0 0 500px;height:auto;margin:10px;border-radius:16px}.thomas-composer{position:sticky}.thomas-composer textarea{height:50px;min-height:50px}.thomas-composer>button{min-width:104px;padding:0 11px}.thomas-caseboard{padding:0 10px 15px;overflow:visible}.thomas-caseboard section{border-radius:12px}}
 
+/* Thomas interview: keep the conversation, transcript and composer in separate rows. */
+@media(min-width:701px){
+  .theatre-thomas-modal .thomas-dialogue{
+    display:grid;
+    grid-template-rows:auto minmax(0,1fr) auto;
+    min-width:0;
+    min-height:0;
+    box-sizing:border-box;
+  }
+  .theatre-thomas-modal .thomas-dialogue>header{
+    position:relative;
+    z-index:2;
+    box-sizing:border-box;
+  }
+  .theatre-thomas-modal .thomas-messages{
+    min-width:0;
+    min-height:0;
+    overflow-y:auto;
+    box-sizing:border-box;
+  }
+  .theatre-thomas-modal .thomas-composer{
+    position:relative;
+    inset:auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 132px;
+    align-items:center;
+    align-self:auto;
+    width:auto;
+    height:auto;
+    min-height:82px;
+    max-height:none;
+    margin:0;
+    box-sizing:border-box;
+  }
+  .theatre-thomas-modal .thomas-composer textarea{
+    display:block;
+    width:100%;
+    height:54px;
+    min-height:54px;
+    max-height:96px;
+    margin:0;
+    box-sizing:border-box;
+  }
+  .theatre-thomas-modal .thomas-composer>button{
+    align-self:center;
+    width:132px;
+    min-width:132px;
+    height:54px;
+    min-height:54px;
+    padding:0 16px;
+    box-sizing:border-box;
+  }
+}
+
 /* Thomas stands on the right-hand service platform; the exchange stays compact. */
 .thomas-prelude>img{left:78%;bottom:3.5%;height:72%;max-width:30%;animation:thomasBreath 4.6s ease-in-out infinite}.thomas-prelude-dialogue{left:5.5%;top:15%;width:min(690px,51%)}.thomas-prelude-dialogue>article{padding:20px 25px 22px;border-radius:22px 5px 22px 22px}.thomas-prelude-dialogue>article:before{left:auto;right:-14px;border-width:8px 0 8px 14px;border-color:transparent transparent transparent #9b723e}.thomas-prelude-dialogue article p{font-size:clamp(24px,2vw,31px)}.thomas-prelude-choices{gap:11px;margin-top:14px}.thomas-prelude-choices button{display:flex;align-items:center;gap:15px;padding:13px 17px;border-radius:18px 5px 18px 18px;font-size:21px}.thomas-prelude-choices button:hover{transform:translateX(5px)}.thomas-prelude-choices img{width:52px;height:52px;flex:0 0 52px;border:1px solid #b68b4d;border-radius:50%;object-fit:cover;box-shadow:0 5px 18px #0008}.thomas-prelude-choices span{display:block}.thomas-prelude-dialogue>aside{border-radius:5px 18px 18px 18px}
 @media(max-width:700px){.thomas-prelude>img{left:71%;bottom:0;height:57%;max-width:50%;opacity:.78}.thomas-prelude-dialogue{left:4%;right:4%;top:7%;width:auto}.thomas-prelude-choices img{width:42px;height:42px;flex-basis:42px}.thomas-prelude-choices button{font-size:17px}}
