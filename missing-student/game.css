@@ -207,6 +207,10 @@
 .pf-tutorial>button:after{content:'ПРОНИКНУТЬ В АРХИВ'!important}
 @media(min-width:701px){.ms-game,.ms-complete{min-height:640px}.ms-head{height:68px}.ms-levels,.ms-layout{min-height:572px}.ms-layout aside{padding-top:26px;padding-bottom:26px}.lock-grid{margin-top:25px;margin-bottom:25px}.ms-task{padding-top:42px;padding-bottom:42px}}
 .ms-intro .ms-confirm{cursor:pointer;box-shadow:0 9px 24px #0008,0 0 0 #c89b4533;transition:transform .18s ease,filter .18s ease,box-shadow .18s ease}.ms-intro .ms-confirm:hover{transform:translateY(-3px);filter:brightness(1.09);box-shadow:0 13px 29px #000b,0 0 18px #c89b453d}.ms-intro .ms-confirm:active{transform:translateY(-1px) scale(.985);filter:brightness(.98)}
+.ms-intro .ms-student-photo{padding:13px 13px 0;background:#e0d4b9}
+.ms-intro .ms-student-id{min-height:68px;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:8px 7px 9px;color:#30271c;text-align:left}
+.ms-intro .ms-student-id b{font:17px 'Special Elite';letter-spacing:1px}
+.ms-intro .ms-student-id small{color:#6d5c45;font:9px Inter,sans-serif;letter-spacing:1.5px}
 
 /* Generated character animation sheets. */
 .pf-player,.pf-guard{width:112px!important;height:112px!important;background-repeat:no-repeat!important;background-position-x:0;background-position-y:0!important;filter:drop-shadow(0 8px 7px #000b)}
