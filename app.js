@@ -120,6 +120,7 @@ const thomasEvidence=[
   {id:'scarf',title:'Красный шарф',image:'assets/case-002/mannequin-black-red-scarf.png'}
 ];
 let thomasSelectedEvidence='';
+const THOMAS_API_URL='https://bot-1787827995-6644-dinarag.bothost.tech/api/thomas';
 function openThomasChapter(){
   pauseCaseMusic();spotlightCleanup();document.querySelector('#gameLevel').textContent='ГЛАВА III · ABOVE THE STAGE';document.querySelector('#progress').textContent='';modal.classList.add('active');modal.querySelector('.game').className='game theatre-thomas-modal';document.body.style.overflow='hidden';
   renderThomasAscent();
@@ -160,9 +161,33 @@ function renderThomasInterview(){
   thomasSelectedEvidence='';
   const availableThomasEvidence=thomasEvidence.filter(item=>item.id==='original'&&localStorage.getItem('theatrePageEvidence')==='yes'||item.id==='pass'&&localStorage.getItem('theatreBackstageEvidence')==='yes');
   gameBody.innerHTML=`<section class="thomas-interview"><div class="thomas-stage"><img src="assets/case-002/thomas-mercer.png" alt="Томас Мерсер"><span>THOMAS MERCER</span><small>CHIEF STAGE TECHNICIAN</small></div><main class="thomas-dialogue"><header><div><small>РАЗГОВОР</small><h2>Добейся доступа к механизму</h2></div><span class="thomas-status"><i></i>НАСТОРОЖЕН</span></header><div class="thomas-messages" data-thomas-messages><article class="thomas-message npc"><b>THOMAS MERCER</b><p>I have kept this theatre running for thirty years. Tell me why you are here.</p></article></div><form class="thomas-composer" data-thomas-form><div class="thomas-attachment" data-thomas-attachment hidden></div><textarea aria-label="Написать Томасу по-английски" placeholder="Напиши ответ по-английски..." rows="1"></textarea><button type="submit">ОТПРАВИТЬ</button></form></main><aside class="thomas-caseboard"><section class="thomas-mood"><small>ОТНОШЕНИЕ ТОМАСА</small><strong>НАСТОРОЖЕН</strong><div><i></i><i></i><i></i><i></i></div><p>Сначала покажи, что твоим вопросам можно доверять.</p></section><section class="thomas-goals"><small>ЦЕЛИ РАЗГОВОРА</small><ol><li><i></i><span>Заслужить доверие</span></li><li><i></i><span>Установить, кто такая M. S.</span></li><li><i></i><span>Получить доступ к механизму</span></li></ol></section><section class="thomas-evidence"><small>УЛИКИ ИЗ ДЕЛА</small><div>${availableThomasEvidence.length?availableThomasEvidence.map(item=>`<button type="button" data-thomas-evidence="${item.id}" title="${item.title}"><i style="background-image:url('${item.image}')"></i><span>${item.title}</span></button>`).join(''):'<p class="thomas-no-evidence">Улик пока нет.</p>'}</div></section><section class="thomas-facts"><small>УСТАНОВЛЕНО</small><p>Новые факты появятся здесь во время разговора.</p></section></aside></section>`;
-  const form=gameBody.querySelector('[data-thomas-form]'),attachment=form.querySelector('[data-thomas-attachment]');
+  const form=gameBody.querySelector('[data-thomas-form]'),attachment=form.querySelector('[data-thomas-attachment]'),textarea=form.querySelector('textarea'),submit=form.querySelector('button[type="submit"]'),messagesPanel=gameBody.querySelector('[data-thomas-messages]');
+  const thomasHistory=[{role:'assistant',content:'I have kept this theatre running for thirty years. Tell me why you are here.'}];
+  const addThomasMessage=(role,text,state='')=>{const article=document.createElement('article');article.className=`thomas-message ${role==='assistant'?'npc':'detective'} ${state}`.trim();const label=document.createElement('b');label.textContent=role==='assistant'?'THOMAS MERCER':'DETECTIVE';const copy=document.createElement('p');copy.textContent=text;article.append(label,copy);messagesPanel.append(article);messagesPanel.scrollTo({top:messagesPanel.scrollHeight,behavior:'smooth'});return article};
   gameBody.querySelectorAll('[data-thomas-evidence]').forEach(button=>button.addEventListener('click',()=>{gameBody.querySelectorAll('[data-thomas-evidence]').forEach(x=>x.classList.remove('selected'));button.classList.add('selected');thomasSelectedEvidence=button.dataset.thomasEvidence;const evidence=availableThomasEvidence.find(x=>x.id===thomasSelectedEvidence);attachment.hidden=false;attachment.innerHTML=`<span style="background-image:url('${evidence.image}')"></span><b>${evidence.title}</b><button type="button" aria-label="Убрать улику">×</button>`;attachment.querySelector('button').addEventListener('click',()=>{thomasSelectedEvidence='';attachment.hidden=true;button.classList.remove('selected')})}));
-  form.addEventListener('submit',e=>{e.preventDefault();const text=form.querySelector('textarea').value.trim();if(!text)return;showToast('Сцена готова к подключению ИИ-персонажа')});
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const text=textarea.value.trim();
+    if(!text||submit.disabled)return;
+    const evidence=availableThomasEvidence.find(item=>item.id===thomasSelectedEvidence);
+    addThomasMessage('user',text);
+    thomasHistory.push({role:'user',content:text});
+    textarea.value='';textarea.disabled=true;submit.disabled=true;submit.textContent='...';
+    const waiting=addThomasMessage('assistant','Thomas is thinking...','waiting');
+    const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),45000);
+    try{
+      const response=await fetch(THOMAS_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:thomasHistory,evidence:evidence?`${evidence.title}. This item was found during the investigation.`:''}),signal:controller.signal});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||!data.reply)throw new Error(data.error||`HTTP ${response.status}`);
+      waiting.remove();addThomasMessage('assistant',data.reply);thomasHistory.push({role:'assistant',content:data.reply});
+      if(evidence){thomasSelectedEvidence='';attachment.hidden=true;gameBody.querySelectorAll('[data-thomas-evidence]').forEach(button=>button.classList.remove('selected'))}
+    }catch(error){
+      waiting.remove();addThomasMessage('assistant',error.name==='AbortError'?'I need a moment. Please ask me again.':'I cannot answer just now. Please try again.','error');
+      thomasHistory.pop();
+    }finally{
+      clearTimeout(timeout);textarea.disabled=false;submit.disabled=false;submit.textContent='ОТПРАВИТЬ';textarea.focus();
+    }
+  });
 }
 
 const backstageRoute=[
