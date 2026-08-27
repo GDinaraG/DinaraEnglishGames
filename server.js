@@ -32,7 +32,10 @@ function requestJson(url, options = {}, body = '') {
       });
     });
     request.setTimeout(30_000, () => request.destroy(new Error('GIGACHAT_TIMEOUT')));
-    request.on('error', error => reject(new Error(`GIGACHAT_NETWORK_${error.code || error.message}`)));
+    request.on('error', error => {
+      const networkError = new Error(`GIGACHAT_NETWORK_${error.code || 'UNKNOWN'}`, { cause: error });
+      reject(networkError);
+    });
     if (body) request.write(body);
     request.end();
   });
@@ -178,6 +181,12 @@ const server = http.createServer(async (req, res) => {
       const knownClientError = ['INVALID_JSON', 'REQUEST_TOO_LARGE', 'THOMAS_MESSAGE_REQUIRED'].includes(error.message);
       const notConfigured = error.message === 'GIGACHAT_NOT_CONFIGURED';
       console.error('Thomas API error:', error.message);
+      console.error('Thomas API error cause:', {
+        message: error.cause?.message || null,
+        code: error.cause?.code || null,
+        name: error.cause?.name || null,
+      });
+      console.error('Thomas API error stack:', error.stack);
       return sendJson(res, knownClientError ? 400 : notConfigured ? 503 : 502, {
         error: notConfigured ? 'GigaChat is not configured' : knownClientError ? error.message : 'AI service is temporarily unavailable',
       });
