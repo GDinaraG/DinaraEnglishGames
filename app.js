@@ -96,8 +96,15 @@ function renderTheatreEvidence(){
   backstageChapter?.classList.add('theatre-chapter-open');
   backstageChapter?.classList.remove('theatre-chapter-locked');
   if(backstageChapter)backstageChapter.setAttribute('aria-disabled','false');
-  progress.textContent=`${(found?1:0)+(backstageFound?1:0)} / 3`;
-  grid.innerHTML=`<button class="theatre-evidence-slot ${found?'found':'locked'}" ${found?'data-theatre-evidence="1" aria-label="Рассмотреть вырванную страницу"':'disabled'}><i style="background-image:url('assets/case-002/torn-script-page.png')"></i><span>01</span><b>${found?'Вырванная страница':'НЕ НАЙДЕНО'}</b></button><button class="theatre-evidence-slot ${backstageFound?'found':'locked'}" ${backstageFound?'data-theatre-evidence="2" aria-label="Рассмотреть журнал мастер-пропуска"':'disabled'}><i style="background-image:url('assets/case-002/master-pass-register.png')"></i><span>02</span><b>${backstageFound?'Журнал мастер-пропуска':'НЕ НАЙДЕНО'}</b></button><button class="theatre-evidence-slot locked" disabled><i></i><span>03</span><b>НЕ НАЙДЕНО</b></button>`;
+  const items=[
+    {title:'Поддельная страница',image:'replacement-manuscript.png',storage:'theatreForgeryEvidence'},
+    {title:'Вырванная страница',image:'torn-script-page.png',storage:'theatrePageEvidence'},
+    {title:'Фотореконструкция',image:'backstage-room1-current.png',storage:'theatrePhotoEvidence'},
+    {title:'Журнал мастер-пропуска',image:'master-pass-register.png',storage:'theatreBackstageEvidence'},
+    {title:'Показание Эвелин',image:'evelyn-shaw.png',storage:'theatreEvelynMet'}
+  ];
+  progress.textContent=`${items.filter(item=>localStorage.getItem(item.storage)==='yes').length} / ${items.length}`;
+  grid.innerHTML=items.map((item,index)=>{const isFound=localStorage.getItem(item.storage)==='yes';return `<button class="theatre-evidence-slot ${isFound?'found':'locked'}" ${isFound?`data-theatre-evidence="${index+1}" aria-label="Рассмотреть: ${item.title}"`:'disabled'}><i ${isFound?`style="background-image:url('assets/case-002/${item.image}')"`:''}></i><span>${String(index+1).padStart(2,'0')}</span><b>${isFound?item.title:'НЕ НАЙДЕНО'}</b></button>`}).join('');
 }
 function theatrePageMarkup(buttonLabel='ЗАКРЫТЬ'){
   return `<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/torn-script-page.png" alt="Вырванная страница оригинальной пьесы"><div class="theatre-page-copy"><small>ACT III · SCENE FOUR</small><p><b>ELIZA:</b> You cannot own a story simply because you were the first to put your name on it.</p><p class="stage-direction">During the blackout, the figure in the red coat crosses behind the curtain.</p><em>Final revision. M. S.<br>14 October 1998.</em></div></div><div class="theatre-page-notes"><span>УЛИКА 01 · ОРИГИНАЛ</span><h2>Вырванная страница</h2><p>В подделке эта же реплика звучит иначе:</p><blockquote>“A story belongs to the one brave enough to bring it to the stage.”</blockquote><small>WRITTEN AND DIRECTED BY VICTOR HALE</small><div><b>ВЫВОД ДЕТЕКТИВА</b><strong>Подменили не только бумагу. Кто-то изменил смысл сцены и удалил инициалы M. S. Человек в красном ушёл за занавес.</strong></div><button type="button" data-theatre-page-action>${buttonLabel}</button></div></div>`;
@@ -108,16 +115,18 @@ function theatrePassMarkup(buttonLabel='ЗАКРЫТЬ'){
 function openTheatreEvidence(id=1){
   let viewer=document.querySelector('#theatreEvidenceViewer');
   if(!viewer){viewer=document.createElement('div');viewer.id='theatreEvidenceViewer';viewer.className='theatre-evidence-viewer';viewer.innerHTML=`<div class="theatre-evidence-backdrop" data-theatre-view-close></div><article></article>`;document.body.append(viewer);viewer.addEventListener('click',e=>{if(e.target.closest('[data-theatre-view-close],[data-theatre-page-action]')){viewer.classList.remove('active');document.body.style.overflow=''}})}
-  viewer.querySelector('article').innerHTML=`${id===2?theatrePassMarkup():theatrePageMarkup()}<button class="theatre-view-close" type="button" data-theatre-view-close aria-label="Закрыть">×</button>`;
+  const extra={1:{tag:'УЛИКА 01 · ФУТЛЯР',title:'Поддельная страница',text:'Копию напечатали в день исчезновения оригинала. В ней изменена финальная реплика и указано имя Виктора.',image:'replacement-manuscript.png'},3:{tag:'УЛИКА 03 · ФОТОРЕКОНСТРУКЦИЯ',title:'Изменения за кулисами',text:'Сравнение с архивными снимками показало маршрут к механизму над сценой.',image:'backstage-room1-current.png'},5:{tag:'УЛИКА 05 · СВИДЕТЕЛЬ',title:'Показание Эвелин',text:'Эвелин вернулась после репетиции из-за записки о красном костюме. Кто-то намеренно направил её по ложному следу.',image:'evelyn-shaw.png'}};
+  const generic=extra[id],content=id===2?theatrePageMarkup():id===4?theatrePassMarkup():`<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/${generic.image}" alt="${generic.title}"></div><div class="theatre-page-notes"><span>${generic.tag}</span><h2>${generic.title}</h2><p>${generic.text}</p><button type="button" data-theatre-page-action>ЗАКРЫТЬ</button></div></div>`;
+  viewer.querySelector('article').innerHTML=`${content}<button class="theatre-view-close" type="button" data-theatre-view-close aria-label="Закрыть">×</button>`;
   viewer.classList.add('active');document.body.style.overflow='hidden';
 }
 
 const thomasEvidence=[
-  {id:'original',title:'Страница M. S.',image:'assets/case-002/torn-script-page.png'},
-  {id:'forgery',title:'Поддельная страница',image:'assets/case-002/replacement-manuscript.png'},
-  {id:'note',title:'Записка Эвелин',image:'assets/case-002/evelyn-red-coat-note.png'},
-  {id:'pass',title:'Мастер-пропуск',image:'assets/case-002/master-pass-register.png'},
-  {id:'scarf',title:'Красный шарф',image:'assets/case-002/mannequin-black-red-scarf.png'}
+  {id:'forgery',title:'Поддельная страница',image:'assets/case-002/replacement-manuscript.png',storage:'theatreForgeryEvidence'},
+  {id:'original',title:'Страница M. S.',image:'assets/case-002/torn-script-page.png',storage:'theatrePageEvidence'},
+  {id:'photos',title:'Фотореконструкция',image:'assets/case-002/backstage-room1-current.png',storage:'theatrePhotoEvidence'},
+  {id:'pass',title:'Журнал мастер-пропуска',image:'assets/case-002/master-pass-register.png',storage:'theatreBackstageEvidence'},
+  {id:'evelyn',title:'Показание Эвелин',image:'assets/case-002/evelyn-shaw.png',storage:'theatreEvelynMet'}
 ];
 let thomasSelectedEvidence='';
 const THOMAS_API_URL='https://bot-1787827995-6644-dinarag.bothost.tech/api/thomas';
@@ -159,11 +168,22 @@ function renderThomasPrelude(index,reply=''){
 }
 function renderThomasInterview(){
   thomasSelectedEvidence='';
-  const availableThomasEvidence=thomasEvidence.filter(item=>item.id==='original'&&localStorage.getItem('theatrePageEvidence')==='yes'||item.id==='pass'&&localStorage.getItem('theatreBackstageEvidence')==='yes');
+  const availableThomasEvidence=thomasEvidence.filter(item=>localStorage.getItem(item.storage)==='yes');
   const sendIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h14M13 6l6 6-6 6"/></svg>';
   gameBody.innerHTML=`<section class="thomas-interview"><div class="thomas-stage"><img src="assets/case-002/thomas-mercer.png" alt="Томас Мерсер"><span>THOMAS MERCER</span><small>CHIEF STAGE TECHNICIAN</small></div><main class="thomas-dialogue"><div class="thomas-messages" data-thomas-messages><article class="thomas-message npc"><b>THOMAS MERCER</b><p>I have kept this theatre running for thirty years. Tell me why you are here.</p></article></div><form class="thomas-composer" data-thomas-form><div class="thomas-attachment" data-thomas-attachment hidden></div><textarea aria-label="Написать Томасу по-английски" placeholder="Напиши ответ по-английски..." rows="1"></textarea><button type="submit" aria-label="Отправить сообщение">${sendIcon}</button></form></main><aside class="thomas-caseboard"><section class="thomas-mood"><small>ОТНОШЕНИЕ ТОМАСА</small><strong>НАСТОРОЖЕН</strong><div><i></i><i></i><i></i><i></i></div><p>Сначала покажи, что твоим вопросам можно доверять.</p></section><section class="thomas-goals"><small>ЦЕЛИ РАЗГОВОРА</small><ol><li><i></i><span>Заслужить доверие</span></li><li><i></i><span>Установить, кто такая M. S.</span></li><li><i></i><span>Получить доступ к механизму</span></li></ol></section><section class="thomas-evidence"><small>УЛИКИ ИЗ ДЕЛА</small><div>${availableThomasEvidence.length?availableThomasEvidence.map(item=>`<button type="button" data-thomas-evidence="${item.id}" title="${item.title}"><i style="background-image:url('${item.image}')"></i><span>${item.title}</span></button>`).join(''):'<p class="thomas-no-evidence">Улик пока нет.</p>'}</div></section><section class="thomas-facts"><small>УСТАНОВЛЕНО</small><p>Новые факты появятся здесь во время разговора.</p></section></aside></section>`;
-  const form=gameBody.querySelector('[data-thomas-form]'),attachment=form.querySelector('[data-thomas-attachment]'),textarea=form.querySelector('textarea'),submit=form.querySelector('button[type="submit"]'),messagesPanel=gameBody.querySelector('[data-thomas-messages]');
+  const form=gameBody.querySelector('[data-thomas-form]'),attachment=form.querySelector('[data-thomas-attachment]'),textarea=form.querySelector('textarea'),submit=form.querySelector('button[type="submit"]'),messagesPanel=gameBody.querySelector('[data-thomas-messages]'),mood=gameBody.querySelector('.thomas-mood'),goalItems=[...gameBody.querySelectorAll('.thomas-goals li')],factsPanel=gameBody.querySelector('.thomas-facts');
   const thomasHistory=[{role:'assistant',content:'I have kept this theatre running for thirty years. Tell me why you are here.'}];
+  let thomasState={trust:0,msIdentified:false,accessGranted:false};
+  const updateThomasProgress=(progress={},facts=[])=>{
+    thomasState={...thomasState,...progress};
+    const trust=Math.max(0,Math.min(4,Number(thomasState.trust)||0)),labels=['НАСТОРОЖЕН','ОСТОРОЖЕН','СЛУШАЕТ','ДОВЕРЯЕТ','ДОВЕРЯЕТ'];
+    mood.querySelector('strong').textContent=labels[trust];
+    mood.querySelectorAll('i').forEach((bar,index)=>bar.classList.toggle('active',index<trust));
+    mood.querySelector('p').textContent=trust>=3?'Томас готов говорить откровеннее.':trust>=2?'Он видит, что ты проверяешь факты.':'Сначала покажи, что твоим вопросам можно доверять.';
+    [trust>=2,thomasState.msIdentified,thomasState.accessGranted].forEach((done,index)=>goalItems[index]?.classList.toggle('done',done));
+    const known=Array.isArray(facts)?facts:[];
+    factsPanel.innerHTML=`<small>УСТАНОВЛЕНО</small>${known.length?`<ul>${known.map(fact=>`<li>${escapeHtml(fact)}</li>`).join('')}</ul>`:'<p>Новые факты появятся здесь во время разговора.</p>'}`;
+  };
   const addThomasMessage=(role,text,state='')=>{const article=document.createElement('article');article.className=`thomas-message ${role==='assistant'?'npc':'detective'} ${state}`.trim();const label=document.createElement('b');label.textContent=role==='assistant'?'THOMAS MERCER':'DETECTIVE';const copy=document.createElement('p');copy.textContent=text;article.append(label,copy);messagesPanel.append(article);messagesPanel.scrollTo({top:messagesPanel.scrollHeight,behavior:'smooth'});return article};
   gameBody.querySelectorAll('[data-thomas-evidence]').forEach(button=>button.addEventListener('click',()=>{gameBody.querySelectorAll('[data-thomas-evidence]').forEach(x=>x.classList.remove('selected'));button.classList.add('selected');thomasSelectedEvidence=button.dataset.thomasEvidence;const evidence=availableThomasEvidence.find(x=>x.id===thomasSelectedEvidence);attachment.hidden=false;attachment.innerHTML=`<span style="background-image:url('${evidence.image}')"></span><b>${evidence.title}</b><button type="button" aria-label="Убрать улику">×</button>`;attachment.querySelector('button').addEventListener('click',()=>{thomasSelectedEvidence='';attachment.hidden=true;button.classList.remove('selected')})}));
   form.addEventListener('submit',async e=>{
@@ -177,10 +197,10 @@ function renderThomasInterview(){
     const waiting=addThomasMessage('assistant','Thomas is thinking...','waiting');
     const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),45000);
     try{
-      const response=await fetch(THOMAS_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:thomasHistory,evidence:evidence?`${evidence.title}. This item was found during the investigation.`:''}),signal:controller.signal});
+      const response=await fetch(THOMAS_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:thomasHistory,evidence:evidence?{id:evidence.id,title:evidence.title}:null,state:thomasState}),signal:controller.signal});
       const data=await response.json().catch(()=>({}));
       if(!response.ok||!data.reply)throw new Error(data.error||`HTTP ${response.status}`);
-      waiting.remove();addThomasMessage('assistant',data.reply);thomasHistory.push({role:'assistant',content:data.reply});
+      waiting.remove();addThomasMessage('assistant',data.reply);thomasHistory.push({role:'assistant',content:data.reply});updateThomasProgress(data.progress,data.facts);
       if(evidence){thomasSelectedEvidence='';attachment.hidden=true;gameBody.querySelectorAll('[data-thomas-evidence]').forEach(button=>button.classList.remove('selected'))}
     }catch(error){
       waiting.remove();addThomasMessage('assistant',error.name==='AbortError'?'I need a moment. Please ask me again.':'I cannot answer just now. Please try again.','error');
@@ -190,6 +210,7 @@ function renderThomasInterview(){
     }
   });
   textarea.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();form.requestSubmit()}});
+  updateThomasProgress();
 }
 
 const backstageRoute=[
@@ -301,7 +322,7 @@ function renderEvelynDialogue(index){
   panel.innerHTML=`<div class="evelyn-bubble"><small>${node.speaker}</small><p>${node.text}</p></div>${node.choices?`<div class="evelyn-choices">${node.choices.map((choice,i)=>`<button type="button" data-evelyn-choice="${i}"><img src="${avatarSrc()}" alt=""><span>${choice.text}</span></button>`).join('')}</div>`:node.end?`<div class="evelyn-clue"><small>МЫСЛЬ ДЕТЕКТИВА</small><p>Кто оставил Эвелин записку и зачем направил её к красному пальто?</p><button type="button" data-evelyn-finish>СОХРАНИТЬ НАБЛЮДЕНИЕ</button></div>`:`<button type="button" class="evelyn-next" data-evelyn-next>ПРОДОЛЖИТЬ</button>`}`;
   panel.querySelectorAll('[data-evelyn-choice]').forEach(button=>button.addEventListener('click',()=>{const choice=node.choices[+button.dataset.evelynChoice];button.closest('.evelyn-choices').classList.add('chosen');setTimeout(()=>renderEvelynDialogue(choice.next),180)}));
   panel.querySelector('[data-evelyn-next]')?.addEventListener('click',()=>renderEvelynDialogue(node.next));
-  panel.querySelector('[data-evelyn-finish]')?.addEventListener('click',()=>{localStorage.setItem('theatreEvelynMet','yes');renderBackstageEvelynConclusion()});
+  panel.querySelector('[data-evelyn-finish]')?.addEventListener('click',()=>{localStorage.setItem('theatreEvelynMet','yes');renderTheatreEvidence();renderBackstageEvelynConclusion()});
 }
 function renderBackstageEvelynConclusion(){
   gameBody.innerHTML=`<section class="evelyn-conclusion"><div><img src="assets/case-002/evelyn-shaw.png" alt="Эвелин Шоу"><article><small>НОВЫЙ СВИДЕТЕЛЬ · EVELYN SHAW</small><h2>Костюмный след подменили</h2><p>После репетиции кто-то изменил список костюмов и оставил Эвелин записку с просьбой проверить красное пальто. Красный шарф не принадлежал финальной сцене.</p><button type="button" data-evelyn-close>ВЕРНУТЬСЯ К ДЕЛУ</button></article></div></section>`;
@@ -331,7 +352,7 @@ function renderBackstageFinalRoom(){
 }
 function renderBackstageEvidence(){
   gameBody.innerHTML=`<section class="backstage-evidence-result">${theatrePassMarkup('ДОБАВИТЬ К УЛИКАМ')}</section>`;
-  gameBody.querySelector('[data-theatre-page-action]').addEventListener('click',()=>{localStorage.setItem('theatreBackstageEvidence','yes');renderTheatreEvidence();closeGame(false);setTimeout(()=>theatreCase?.querySelector('.theatre-materials')?.scrollIntoView({behavior:'smooth',block:'center'}),100)});
+  gameBody.querySelector('[data-theatre-page-action]').addEventListener('click',()=>{localStorage.setItem('theatreBackstageEvidence','yes');localStorage.setItem('theatrePhotoEvidence','yes');renderTheatreEvidence();closeGame(false);setTimeout(()=>theatreCase?.querySelector('.theatre-materials')?.scrollIntoView({behavior:'smooth',block:'center'}),100)});
 }
 
 let theatrePrologueStep = 0;
@@ -359,7 +380,7 @@ function renderTheatrePrologue() {
     gameBody.querySelector('[data-approach-victor]')?.addEventListener('click',beginConversation);
     gameBody.querySelector('.victor-approach')?.addEventListener('click',beginConversation);
   }
-  gameBody.querySelector('[data-prologue-next]')?.addEventListener('click', () => { theatrePrologueStep++; renderTheatrePrologue(); });
+  gameBody.querySelector('[data-prologue-next]')?.addEventListener('click', () => { localStorage.setItem('theatreForgeryEvidence','yes');renderTheatreEvidence();theatrePrologueStep++;renderTheatrePrologue(); });
   gameBody.querySelector('.manuscript-hotspot')?.addEventListener('click', () => { theatrePrologueStep = 2; renderTheatrePrologue(); });
   gameBody.querySelector('[data-prologue-finish]')?.addEventListener('click', e => {
     e.currentTarget.disabled = true;

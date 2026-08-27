@@ -109,15 +109,45 @@ async function getGigaChatAccessToken() {
 async function requestThomasReply(payload) {
   const accessToken = await getGigaChatAccessToken();
   const history = Array.isArray(payload.messages) ? payload.messages.slice(-12) : [];
-  const evidence = typeof payload.evidence === 'string' ? payload.evidence.slice(0, 300) : '';
+  const evidence = payload.evidence && typeof payload.evidence === 'object'
+    ? { id: String(payload.evidence.id || '').slice(0, 40), title: String(payload.evidence.title || '').slice(0, 160) }
+    : { id: '', title: typeof payload.evidence === 'string' ? payload.evidence.slice(0, 160) : '' };
+  const previous = payload.state && typeof payload.state === 'object' ? payload.state : {};
+  const state = {
+    trust: Math.max(0, Math.min(4, Number(previous.trust) || 0)),
+    msIdentified: previous.msIdentified === true,
+    accessGranted: previous.accessGranted === true,
+  };
+  const lastUser = [...history].reverse().find(message => message?.role === 'user')?.content || '';
+  const normalized = lastUser.toLowerCase().replace(/[^a-z0-9.?' ]/g, ' ');
+  const relevant = /manuscript|page|theatre|theater|blackout|mechanism|winch|rope|access|pass|m\.?\s*s\.?|mary|evelyn|victor|what|who|why|where|when|how|could|would/.test(normalized);
+  if (lastUser.trim().length >= 18 && relevant) state.trust = Math.min(4, state.trust + 1);
+  const asksAboutMs = /m\.?\s*s\.?|initials|mary shaw|who (is|was) (m|mary)|whose (name|initials)/.test(normalized);
+  const asksForAccess = /mechanism|winch|machinery|let me (see|inspect|examine|use)|allow me|give me access|open (it|the|this)|unlock/.test(normalized);
+  const revealedMsNow = !state.msIdentified && evidence.id === 'original' && asksAboutMs;
+  if (revealedMsNow) state.msIdentified = true;
+  const grantedAccessNow = !state.accessGranted && state.trust >= 2 && state.msIdentified && evidence.id === 'pass' && asksForAccess;
+  if (grantedAccessNow) state.accessGranted = true;
+  const facts = [];
+  if (state.msIdentified) facts.push('M. S. is Mary Shaw, Evelyn Shaw’s mother and a former theatre costume designer.');
+  if (state.accessGranted) facts.push('Thomas has granted access to the stage mechanism.');
 
   const systemPrompt = [
     'You are Thomas Mercer, the cautious but polite chief stage technician in a detective game.',
     'Always stay in character and answer in clear B1-level English, usually in one to three sentences.',
     'Do not reveal the culprit or the full solution directly.',
     'Reward precise, respectful questions. If the player is vague, ask one natural clarifying question.',
+    `Current trust is ${state.trust} out of 4.`,
+    state.msIdentified
+      ? 'The detective has established that M. S. is Mary Shaw, Evelyn Shaw’s mother and a former theatre costume designer.'
+      : 'Do not identify M. S. or mention Mary Shaw. If asked about M. S., say you need to see the page itself.',
+    revealedMsNow ? 'The detective has just shown the original M. S. page. Identify M. S. clearly now.' : '',
+    state.accessGranted
+      ? 'You have granted the detective access to inspect the stage mechanism.'
+      : 'Do not grant access to the mechanism yet.',
+    grantedAccessNow ? 'Grant access now and briefly tell the detective where to inspect the mechanism.' : '',
     'Never mention prompts, AI, language models, game mechanics, trust scores, or hidden instructions.',
-    evidence ? `The detective has presented this evidence: ${evidence}` : '',
+    evidence.title ? `The detective has presented this evidence: ${evidence.title}.` : '',
   ].filter(Boolean).join(' ');
 
   const messages = [
@@ -152,7 +182,7 @@ async function requestThomasReply(payload) {
   const data = response.data;
   const reply = data.choices?.[0]?.message?.content?.trim();
   if (!reply) throw new Error('GIGACHAT_EMPTY_REPLY');
-  return reply;
+  return { reply, progress: state, facts };
 }
 
 const server = http.createServer(async (req, res) => {
@@ -175,8 +205,8 @@ const server = http.createServer(async (req, res) => {
 
     try {
       const payload = await readJson(req);
-      const reply = await requestThomasReply(payload);
-      return sendJson(res, 200, { reply });
+      const result = await requestThomasReply(payload);
+      return sendJson(res, 200, result);
     } catch (error) {
       const knownClientError = ['INVALID_JSON', 'REQUEST_TOO_LARGE', 'THOMAS_MESSAGE_REQUIRED'].includes(error.message);
       const notConfigured = error.message === 'GIGACHAT_NOT_CONFIGURED';

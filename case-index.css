@@ -543,3 +543,10 @@ footer{border-top:0!important}
   .theatre-thomas-modal .thomas-composer textarea{height:50px!important;min-height:50px!important;max-height:50px!important}
   .theatre-thomas-modal .thomas-composer>button{flex-basis:50px!important;width:50px!important;min-width:50px!important;max-width:50px!important;height:50px!important;min-height:50px!important;max-height:50px!important}
 }
+.thomas-mood>div i.active{background:#c98a47!important;box-shadow:0 0 9px #c98a4755}
+.thomas-goals li.done{color:#8fd0a0}
+.thomas-goals li.done i{border-color:#69b47c;background:#173f23;box-shadow:0 0 11px #5dbb7555}
+.thomas-goals li.done i:after{content:'✓';display:block;color:#a9e7b6;font:10px/13px Inter;text-align:center}
+.thomas-facts ul{display:grid;gap:8px;margin:10px 0 0;padding:0;list-style:none}
+.thomas-facts li{padding-left:14px;color:#b9d8c0;font:12px/1.45 Georgia;position:relative}
+.thomas-facts li:before{content:'•';position:absolute;left:0;color:#69b47c}
