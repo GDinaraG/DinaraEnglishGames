@@ -484,3 +484,62 @@ footer{border-top:0!important}
 /* Keep the scripted exchange beside Thomas instead of covering him. */
 .thomas-prelude-dialogue{left:2.5%;top:10%;width:min(580px,38%)}.thomas-prelude-dialogue>article{padding:16px 20px 18px}.thomas-prelude-dialogue article p{margin-top:7px;font-size:clamp(22px,1.75vw,28px);line-height:1.27}.thomas-prelude-choices{gap:8px;margin-top:10px}.thomas-prelude-choices button{gap:11px;padding:10px 13px;font-size:18px;line-height:1.24}.thomas-prelude-choices img{width:44px;height:44px;flex-basis:44px}.thomas-prelude-dialogue>aside{gap:12px;margin-top:10px;padding:13px 15px}.thomas-prelude-dialogue aside p{margin:3px 0 9px;font-size:18px;line-height:1.32}.thomas-prelude-dialogue aside button{padding:9px 13px}
 @media(max-width:700px){.thomas-prelude-dialogue{left:4%;right:4%;top:6%;width:auto}.thomas-prelude-dialogue article p{font-size:21px}.thomas-prelude-choices button{font-size:16px}}
+
+/* Final isolated composer layout. The interview intentionally has no title bar. */
+.theatre-thomas-modal .thomas-dialogue{
+  display:grid!important;
+  grid-template-rows:minmax(0,1fr) auto!important;
+  min-height:0!important;
+}
+.theatre-thomas-modal .thomas-messages{
+  min-height:0!important;
+  padding-top:24px!important;
+  overflow-y:auto!important;
+}
+.theatre-thomas-modal .thomas-composer{
+  position:relative!important;
+  inset:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  align-self:auto!important;
+  gap:10px!important;
+  width:auto!important;
+  height:78px!important;
+  min-height:78px!important;
+  max-height:78px!important;
+  margin:0!important;
+  padding:12px 14px!important;
+  box-sizing:border-box!important;
+}
+.theatre-thomas-modal .thomas-composer textarea{
+  flex:1 1 auto!important;
+  width:auto!important;
+  height:52px!important;
+  min-height:52px!important;
+  max-height:52px!important;
+  margin:0!important;
+  padding:14px 18px!important;
+  box-sizing:border-box!important;
+}
+.theatre-thomas-modal .thomas-composer>button{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 52px!important;
+  align-self:center!important;
+  width:52px!important;
+  min-width:52px!important;
+  max-width:52px!important;
+  height:52px!important;
+  min-height:52px!important;
+  max-height:52px!important;
+  padding:0!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+}
+.theatre-thomas-modal .thomas-composer>button svg{width:25px;height:25px;fill:none;stroke:#171009;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:700px){
+  .theatre-thomas-modal .thomas-dialogue{flex:0 0 500px!important;display:grid!important}
+  .theatre-thomas-modal .thomas-composer{height:72px!important;min-height:72px!important;max-height:72px!important;padding:10px!important}
+  .theatre-thomas-modal .thomas-composer textarea{height:50px!important;min-height:50px!important;max-height:50px!important}
+  .theatre-thomas-modal .thomas-composer>button{flex-basis:50px!important;width:50px!important;min-width:50px!important;max-width:50px!important;height:50px!important;min-height:50px!important;max-height:50px!important}
+}
