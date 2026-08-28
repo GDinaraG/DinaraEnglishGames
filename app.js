@@ -65,8 +65,28 @@ const theatreCase = document.querySelector('.case-collection-next');
 if (theatreCase) {
   theatreCase.className = 'case-collection theatre-case';
   theatreCase.setAttribute('aria-label', 'Дело номер 002: The Last Performance');
-  theatreCase.innerHTML = `<div class="theatre-case-hero"><div class="theatre-case-copy"><span>CASE No. 002 · NEW</span><h2>The Last Performance</h2><p>Рукопись исчезла до последнего занавеса.</p><div class="theatre-rule" aria-hidden="true"><i></i><b>THEATRE ARCHIVE</b><i></i></div></div></div><div class="theatre-case-body"><div class="theatre-case-intro"><span>НОВОЕ РАССЛЕДОВАНИЕ</span><h3>На сцене осталась только подделка</h3><p>Театр опустел, занавес закрыт, но кто-то всё ещё играет свою роль.</p></div><div class="theatre-chapters"><article><img src="assets/case-002/empty-stage.png" alt="Пустая сцена старого театра"><div><small>ГЛАВА I</small><h4>The Empty Stage</h4><span>СЦЕНА</span></div></article><article><img src="assets/case-002/backstage.png" alt="Закулисье старого театра"><div><small>ГЛАВА II</small><h4>Behind the Curtain</h4><span>ЗАКУЛИСЬЕ</span></div></article><article><img src="assets/case-002/fly-loft.png" alt="Технические галереи над сценой"><div><small>ГЛАВА III</small><h4>Above the Stage</h4><span>КОЛОСНИКИ</span></div></article></div><div class="theatre-case-footer"><span>ДОСЬЕ ФОРМИРУЕТСЯ</span><strong>OPEN CASE</strong></div></div>`;
+  theatreCase.innerHTML = `<div class="theatre-case-hero"><div class="theatre-case-copy"><span>CASE No. 002 · NEW</span><h2>The Last Performance</h2><p>Рукопись исчезла до последнего занавеса.</p><div class="theatre-rule" aria-hidden="true"><i></i><b>THEATRE ARCHIVE</b><i></i></div></div><button class="case-reset theatre-case-reset" type="button" data-theatre-reset>СБРОСИТЬ ПРОГРЕСС</button></div><div class="theatre-case-body"><div class="theatre-case-intro"><span>НОВОЕ РАССЛЕДОВАНИЕ</span><h3>На сцене осталась только подделка</h3><p>Театр опустел, занавес закрыт, но кто-то всё ещё играет свою роль.</p></div><div class="theatre-chapters"><article><img src="assets/case-002/empty-stage.png" alt="Пустая сцена старого театра"><div><small>ГЛАВА I</small><h4>The Empty Stage</h4><span>СЦЕНА</span></div></article><article><img src="assets/case-002/backstage.png" alt="Закулисье старого театра"><div><small>ГЛАВА II</small><h4>Behind the Curtain</h4><span>ЗАКУЛИСЬЕ</span></div></article><article><img src="assets/case-002/fly-loft.png" alt="Технические галереи над сценой"><div><small>ГЛАВА III</small><h4>Above the Stage</h4><span>КОЛОСНИКИ</span></div></article></div><div class="theatre-case-footer"><span>ДОСЬЕ ФОРМИРУЕТСЯ</span><strong>OPEN CASE</strong></div></div>`;
   theatreCase.insertAdjacentHTML('beforeend', `<section class="theatre-materials"><div class="theatre-materials-head"><div><span>CASE No. 002</span><h3>Улики по делу</h3></div><strong data-theatre-evidence-progress>0 / 3</strong></div><div class="theatre-evidence-grid" data-theatre-evidence-grid></div></section>`);
+  const theatreReset=theatreCase.querySelector('[data-theatre-reset]');
+  let theatreResetTimer;
+  theatreReset.addEventListener('click',event=>{
+    event.stopPropagation();
+    if(!theatreReset.classList.contains('confirm')){
+      theatreReset.classList.add('confirm');
+      theatreReset.textContent='НАЖМИ ЕЩЁ РАЗ ДЛЯ СБРОСА';
+      clearTimeout(theatreResetTimer);
+      theatreResetTimer=setTimeout(()=>{theatreReset.classList.remove('confirm');theatreReset.textContent='СБРОСИТЬ ПРОГРЕСС'},4000);
+      return;
+    }
+    clearTimeout(theatreResetTimer);
+    ['theatreForgeryEvidence','theatrePageEvidence','theatreEvelynMet','theatreScarfEvidence','theatreBackstageEvidence','theatrePhotoEvidence'].forEach(key=>localStorage.removeItem(key));
+    theatreReset.classList.remove('confirm');
+    theatreReset.textContent='СБРОСИТЬ ПРОГРЕСС';
+    document.querySelector('#theatreEvidenceViewer')?.classList.remove('active');
+    document.body.style.overflow='';
+    renderTheatreEvidence();
+    showToast('Прогресс дела №002 сброшен');
+  });
   renderTheatreEvidence();
   theatreCase.addEventListener('click',e=>{const clue=e.target.closest('[data-theatre-evidence]');if(clue)openTheatreEvidence(+clue.dataset.theatreEvidence)});
   const openingChapter = theatreCase.querySelector('.theatre-chapters article');
@@ -108,6 +128,9 @@ function renderTheatreEvidence(){
 function theatrePageMarkup(buttonLabel='ЗАКРЫТЬ'){
   return `<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/torn-script-page.png" alt="Вырванная страница оригинальной пьесы"><div class="theatre-page-copy"><small>ACT III · SCENE FOUR</small><p><b>ELIZA:</b> You cannot own a story simply because you were the first to put your name on it.</p><p class="stage-direction">During the blackout, the figure in the red coat crosses behind the curtain.</p><em>Final revision. M. S.<br>14 October 1998.</em></div></div><div class="theatre-page-notes"><span>УЛИКА 01 · ОРИГИНАЛ</span><h2>Вырванная страница</h2><p>В новой версии эта же реплика звучит иначе:</p><blockquote>“A story belongs to the one brave enough to bring it to the stage.”</blockquote><small>VICTOR HALE</small><div><b>МЫСЛЬ ДЕТЕКТИВА</b><strong>Вот он, настоящий лист. Реплика здесь другая, а вместо имени Виктора стоят инициалы M. S. Кто скрывается за ними?</strong></div><button type="button" data-theatre-page-action>${buttonLabel}</button></div></div>`;
 }
+function theatreForgeryMarkup(buttonLabel='ЗАКРЫТЬ'){
+  return `<div class="theatre-page-evidence"><div class="fake-page-photo"><img src="assets/case-002/replacement-manuscript-clean.png" alt="Поддельная страница пьесы в футляре"><article class="fake-page-copy"><small>ACT III · SCENE FOUR</small><p><b>ELIZA:</b> A story belongs to the one brave enough to bring it to the stage.</p><section class="wardrobe-cue-sheet"><b>WARDROBE CUE SHEET</b><p>Six masked guests enter:</p><ol><li>a blue dress, a silver mask, no gloves</li><li>a tan coat, brown gloves, a black top hat</li><li>a black coat, an ivory scarf, no hat</li><li>a short red jacket, black gloves, a black case</li><li>a long blue coat, black gloves, a black case</li><li>a long red coat, black gloves, no hat, a black case</li></ol></section><em>VICTOR HALE</em></article></div><div class="theatre-page-notes"><span>УЛИКА 01 · ФУТЛЯР</span><h2>Поддельная страница</h2><p>Копию напечатали в день исчезновения оригинала. В ней изменена финальная реплика и указано имя Виктора.</p><button type="button" data-theatre-page-action>${buttonLabel}</button></div></div>`;
+}
 function theatrePassMarkup(buttonLabel='ЗАКРЫТЬ'){
   return `<div class="theatre-pass-evidence"><div class="theatre-pass-photo"><img src="assets/case-002/master-pass-register.png" alt="Механический журнал доступа и ключ с инициалами V.H."><div class="pass-log-print"><span>18:43</span><b>MASTER PASS</b><em>FLY GALLERY · V.H.</em></div></div><div class="theatre-pass-notes"><span>УЛИКА 02 · ЗАКУЛИСЬЕ</span><h2>Журнал мастер-пропуска</h2><p>Во время отключения света механизм зарегистрировал мастер-пропуск Виктора.</p><div><b>ВЫВОД ДЕТЕКТИВА</b><strong>Пропуск Виктора был в закулисье в 18:43. Но журнал не показывает, кто им воспользовался.</strong></div><button type="button" data-theatre-page-action>${buttonLabel}</button></div></div>`;
 }
@@ -115,7 +138,7 @@ function openTheatreEvidence(id=1){
   let viewer=document.querySelector('#theatreEvidenceViewer');
   if(!viewer){viewer=document.createElement('div');viewer.id='theatreEvidenceViewer';viewer.className='theatre-evidence-viewer';viewer.innerHTML=`<div class="theatre-evidence-backdrop" data-theatre-view-close></div><article></article>`;document.body.append(viewer);viewer.addEventListener('click',e=>{if(e.target.closest('[data-theatre-view-close],[data-theatre-page-action]')){viewer.classList.remove('active');document.body.style.overflow=''}})}
   const extra={1:{tag:'УЛИКА 01 · ФУТЛЯР',title:'Поддельная страница',text:'Копию напечатали в день исчезновения оригинала. В ней изменена финальная реплика и указано имя Виктора.',image:'replacement-manuscript-clean.png'},3:{tag:'УЛИКА 03 · СВИДЕТЕЛЬ',title:'Показание Эвелин',text:'Эвелин вернулась после репетиции из-за записки о красном костюме. Кто-то намеренно направил её по ложному следу.',image:'evelyn-shaw.png'},4:{tag:'УЛИКА 04 · КОСТЮМЕРНАЯ',title:'Красный шарф',text:'Шарф добавили в список уже после репетиции. На одном краю сохранилась старая ручная штопка.',image:'mary-shaw-red-scarf.png'}};
-  const generic=extra[id],content=id===2?theatrePageMarkup():`<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/${generic.image}" alt="${generic.title}"></div><div class="theatre-page-notes"><span>${generic.tag}</span><h2>${generic.title}</h2><p>${generic.text}</p><button type="button" data-theatre-page-action>ЗАКРЫТЬ</button></div></div>`;
+  const generic=extra[id],content=id===1?theatreForgeryMarkup():id===2?theatrePageMarkup():`<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/${generic.image}" alt="${generic.title}"></div><div class="theatre-page-notes"><span>${generic.tag}</span><h2>${generic.title}</h2><p>${generic.text}</p><button type="button" data-theatre-page-action>ЗАКРЫТЬ</button></div></div>`;
   viewer.querySelector('article').innerHTML=`${content}<button class="theatre-view-close" type="button" data-theatre-view-close aria-label="Закрыть">×</button>`;
   viewer.classList.add('active');document.body.style.overflow='hidden';
 }

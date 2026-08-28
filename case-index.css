@@ -142,6 +142,8 @@ footer{border-top:0!important}
 @media(max-width:650px){.cases{padding-bottom:0!important}.case-collection-next{margin-top:18px;min-height:180px}.next-case-file{width:calc(100% - 28px);padding:25px 20px;gap:18px}.next-case-file h2{font-size:31px}.next-case-file strong{font-size:12px;padding:11px 9px}}
 .theatre-case{margin-top:30px;background:#080604!important;border-color:#704524;overflow:hidden}
 .theatre-case-hero{min-height:360px;display:grid;place-items:center;text-align:center;position:relative;background:linear-gradient(180deg,#05030224,#070403d6),url('assets/case-002/theatre-hero.png') center 54%/cover no-repeat}
+.theatre-case-hero .theatre-case-reset{position:absolute;z-index:3;left:28px;bottom:24px;margin:0;padding:8px 11px;background:#130d07b8;border-color:#8d6b3c;color:#c8ae7d;backdrop-filter:blur(5px)}
+.theatre-case-hero .theatre-case-reset:hover{transform:translateY(-2px);background:#20150ac7;border-color:#dbad5d;color:#f1d19a}
 .theatre-case-hero:after{content:'';position:absolute;inset:auto 0 0;height:48%;background:linear-gradient(transparent,#080604)}
 .theatre-case-copy{position:relative;z-index:1;padding:62px 24px 78px;text-shadow:0 4px 24px #000}
 .theatre-case-copy>span,.theatre-case-intro>span{color:#d3a64e;font-size:11px;letter-spacing:4px}
@@ -165,7 +167,7 @@ footer{border-top:0!important}
 .theatre-chapters article span{color:#8e7c6b;font-size:9px;letter-spacing:3px}
 .theatre-case-footer{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid #56361e;color:#85776a;font-size:10px;letter-spacing:3px}
 .theatre-case-footer strong{padding:10px 14px;border:1px solid #78322b;color:#ad4a3f;font:14px 'Special Elite';transform:rotate(-3deg)}
-@media(max-width:800px){.theatre-case-body{padding:10px 18px 26px}.theatre-chapters{grid-template-columns:1fr}.theatre-chapters article{height:220px}.theatre-case-hero{min-height:300px}.theatre-case-copy p{font-size:16px}}
+@media(max-width:800px){.theatre-case-body{padding:10px 18px 26px}.theatre-chapters{grid-template-columns:1fr}.theatre-chapters article{height:220px}.theatre-case-hero{min-height:300px}.theatre-case-copy p{font-size:16px}.theatre-case-hero .theatre-case-reset{left:14px;bottom:14px}}
 .theatre-chapter-open{cursor:pointer}.theatre-chapter-open:before{content:'РћРўРљР Р«РўР¬';position:absolute;z-index:3;right:16px;top:16px;padding:8px 11px;border:1px solid #c08b4f;background:#090604d9;color:#e2bd82;font:10px 'Special Elite';letter-spacing:2px;opacity:0;transform:translateY(-5px);transition:.25s}.theatre-chapter-open:hover:before,.theatre-chapter-open:focus-visible:before{opacity:1;transform:none}
 .game.theatre-prologue-modal{width:min(1480px,97vw);height:min(880px,94vh);max-height:94vh;padding:0;clip-path:none;background:#050403;color:#eee;overflow:hidden;border:1px solid #72502d;box-shadow:0 30px 110px #000}
 .theatre-prologue-modal .close{z-index:30;color:#d2ae6b;text-shadow:0 2px 8px #000}
@@ -557,6 +559,7 @@ footer{border-top:0!important}
 .theatre-evidence-viewer>article{width:min(960px,94vw);max-height:88vh;padding:26px}
 .theatre-evidence-viewer .theatre-page-evidence{grid-template-columns:minmax(280px,410px) minmax(280px,370px);gap:27px;width:min(840px,100%);margin:auto}
 .theatre-evidence-viewer .theatre-page-photo{max-height:68vh}
+.theatre-evidence-viewer .fake-page-photo{width:100%;max-height:68vh;margin:auto}
 .theatre-evidence-viewer .theatre-page-notes h2{font-size:38px}
 .theatre-evidence-viewer .theatre-page-notes>div{margin:18px 0;padding:14px 16px}
 .theatre-evidence-viewer .theatre-page-photo>img[src*="evelyn-shaw"]{object-fit:contain;object-position:center bottom;background:#080604}
