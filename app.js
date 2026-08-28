@@ -90,24 +90,23 @@ if (theatreCase) {
 
 function renderTheatreEvidence(){
   if(!theatreCase)return;
-  const found=localStorage.getItem('theatrePageEvidence')==='yes',backstageFound=localStorage.getItem('theatreBackstageEvidence')==='yes',progress=theatreCase.querySelector('[data-theatre-evidence-progress]'),grid=theatreCase.querySelector('[data-theatre-evidence-grid]');
+  const progress=theatreCase.querySelector('[data-theatre-evidence-progress]'),grid=theatreCase.querySelector('[data-theatre-evidence-grid]');
   if(!progress||!grid)return;
   const backstageChapter=theatreCase.querySelectorAll('.theatre-chapters article')[1];
   backstageChapter?.classList.add('theatre-chapter-open');
   backstageChapter?.classList.remove('theatre-chapter-locked');
   if(backstageChapter)backstageChapter.setAttribute('aria-disabled','false');
   const items=[
-    {title:'Поддельная страница',image:'replacement-manuscript.png',storage:'theatreForgeryEvidence'},
+    {title:'Поддельная страница',image:'replacement-manuscript-clean.png',storage:'theatreForgeryEvidence'},
     {title:'Вырванная страница',image:'torn-script-page.png',storage:'theatrePageEvidence'},
-    {title:'Фотореконструкция',image:'backstage-room1-current.png',storage:'theatrePhotoEvidence'},
-    {title:'Журнал мастер-пропуска',image:'master-pass-register.png',storage:'theatreBackstageEvidence'},
-    {title:'Показание Эвелин',image:'evelyn-shaw.png',storage:'theatreEvelynMet'}
+    {title:'Показание Эвелин',image:'evelyn-shaw.png',storage:'theatreEvelynMet'},
+    {title:'Красный шарф',image:'mary-shaw-red-scarf.png',storage:'theatreScarfEvidence'}
   ];
   progress.textContent=`${items.filter(item=>localStorage.getItem(item.storage)==='yes').length} / ${items.length}`;
   grid.innerHTML=items.map((item,index)=>{const isFound=localStorage.getItem(item.storage)==='yes';return `<button class="theatre-evidence-slot ${isFound?'found':'locked'}" ${isFound?`data-theatre-evidence="${index+1}" aria-label="Рассмотреть: ${item.title}"`:'disabled'}><i ${isFound?`style="background-image:url('assets/case-002/${item.image}')"`:''}></i><span>${String(index+1).padStart(2,'0')}</span><b>${isFound?item.title:'НЕ НАЙДЕНО'}</b></button>`}).join('');
 }
 function theatrePageMarkup(buttonLabel='ЗАКРЫТЬ'){
-  return `<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/torn-script-page.png" alt="Вырванная страница оригинальной пьесы"><div class="theatre-page-copy"><small>ACT III · SCENE FOUR</small><p><b>ELIZA:</b> You cannot own a story simply because you were the first to put your name on it.</p><p class="stage-direction">During the blackout, the figure in the red coat crosses behind the curtain.</p><em>Final revision. M. S.<br>14 October 1998.</em></div></div><div class="theatre-page-notes"><span>УЛИКА 01 · ОРИГИНАЛ</span><h2>Вырванная страница</h2><p>В подделке эта же реплика звучит иначе:</p><blockquote>“A story belongs to the one brave enough to bring it to the stage.”</blockquote><small>WRITTEN AND DIRECTED BY VICTOR HALE</small><div><b>ВЫВОД ДЕТЕКТИВА</b><strong>Подменили не только бумагу. Кто-то изменил смысл сцены и удалил инициалы M. S. Человек в красном ушёл за занавес.</strong></div><button type="button" data-theatre-page-action>${buttonLabel}</button></div></div>`;
+  return `<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/torn-script-page.png" alt="Вырванная страница оригинальной пьесы"><div class="theatre-page-copy"><small>ACT III · SCENE FOUR</small><p><b>ELIZA:</b> You cannot own a story simply because you were the first to put your name on it.</p><p class="stage-direction">During the blackout, the figure in the red coat crosses behind the curtain.</p><em>Final revision. M. S.<br>14 October 1998.</em></div></div><div class="theatre-page-notes"><span>УЛИКА 01 · ОРИГИНАЛ</span><h2>Вырванная страница</h2><p>В новой версии эта же реплика звучит иначе:</p><blockquote>“A story belongs to the one brave enough to bring it to the stage.”</blockquote><small>VICTOR HALE</small><div><b>МЫСЛЬ ДЕТЕКТИВА</b><strong>Вот он, настоящий лист. Реплика здесь другая, а вместо имени Виктора стоят инициалы M. S. Кто скрывается за ними?</strong></div><button type="button" data-theatre-page-action>${buttonLabel}</button></div></div>`;
 }
 function theatrePassMarkup(buttonLabel='ЗАКРЫТЬ'){
   return `<div class="theatre-pass-evidence"><div class="theatre-pass-photo"><img src="assets/case-002/master-pass-register.png" alt="Механический журнал доступа и ключ с инициалами V.H."><div class="pass-log-print"><span>18:43</span><b>MASTER PASS</b><em>FLY GALLERY · V.H.</em></div></div><div class="theatre-pass-notes"><span>УЛИКА 02 · ЗАКУЛИСЬЕ</span><h2>Журнал мастер-пропуска</h2><p>Во время отключения света механизм зарегистрировал мастер-пропуск Виктора.</p><div><b>ВЫВОД ДЕТЕКТИВА</b><strong>Пропуск Виктора был в закулисье в 18:43. Но журнал не показывает, кто им воспользовался.</strong></div><button type="button" data-theatre-page-action>${buttonLabel}</button></div></div>`;
@@ -115,18 +114,17 @@ function theatrePassMarkup(buttonLabel='ЗАКРЫТЬ'){
 function openTheatreEvidence(id=1){
   let viewer=document.querySelector('#theatreEvidenceViewer');
   if(!viewer){viewer=document.createElement('div');viewer.id='theatreEvidenceViewer';viewer.className='theatre-evidence-viewer';viewer.innerHTML=`<div class="theatre-evidence-backdrop" data-theatre-view-close></div><article></article>`;document.body.append(viewer);viewer.addEventListener('click',e=>{if(e.target.closest('[data-theatre-view-close],[data-theatre-page-action]')){viewer.classList.remove('active');document.body.style.overflow=''}})}
-  const extra={1:{tag:'УЛИКА 01 · ФУТЛЯР',title:'Поддельная страница',text:'Копию напечатали в день исчезновения оригинала. В ней изменена финальная реплика и указано имя Виктора.',image:'replacement-manuscript.png'},3:{tag:'УЛИКА 03 · ФОТОРЕКОНСТРУКЦИЯ',title:'Изменения за кулисами',text:'Сравнение с архивными снимками показало маршрут к механизму над сценой.',image:'backstage-room1-current.png'},5:{tag:'УЛИКА 05 · СВИДЕТЕЛЬ',title:'Показание Эвелин',text:'Эвелин вернулась после репетиции из-за записки о красном костюме. Кто-то намеренно направил её по ложному следу.',image:'evelyn-shaw.png'}};
-  const generic=extra[id],content=id===2?theatrePageMarkup():id===4?theatrePassMarkup():`<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/${generic.image}" alt="${generic.title}"></div><div class="theatre-page-notes"><span>${generic.tag}</span><h2>${generic.title}</h2><p>${generic.text}</p><button type="button" data-theatre-page-action>ЗАКРЫТЬ</button></div></div>`;
+  const extra={1:{tag:'УЛИКА 01 · ФУТЛЯР',title:'Поддельная страница',text:'Копию напечатали в день исчезновения оригинала. В ней изменена финальная реплика и указано имя Виктора.',image:'replacement-manuscript-clean.png'},3:{tag:'УЛИКА 03 · СВИДЕТЕЛЬ',title:'Показание Эвелин',text:'Эвелин вернулась после репетиции из-за записки о красном костюме. Кто-то намеренно направил её по ложному следу.',image:'evelyn-shaw.png'},4:{tag:'УЛИКА 04 · КОСТЮМЕРНАЯ',title:'Красный шарф',text:'Шарф добавили в список уже после репетиции. На одном краю сохранилась старая ручная штопка.',image:'mary-shaw-red-scarf.png'}};
+  const generic=extra[id],content=id===2?theatrePageMarkup():`<div class="theatre-page-evidence"><div class="theatre-page-photo"><img src="assets/case-002/${generic.image}" alt="${generic.title}"></div><div class="theatre-page-notes"><span>${generic.tag}</span><h2>${generic.title}</h2><p>${generic.text}</p><button type="button" data-theatre-page-action>ЗАКРЫТЬ</button></div></div>`;
   viewer.querySelector('article').innerHTML=`${content}<button class="theatre-view-close" type="button" data-theatre-view-close aria-label="Закрыть">×</button>`;
   viewer.classList.add('active');document.body.style.overflow='hidden';
 }
 
 const thomasEvidence=[
-  {id:'forgery',title:'Поддельная страница',image:'assets/case-002/replacement-manuscript.png',storage:'theatreForgeryEvidence'},
+  {id:'forgery',title:'Поддельная страница',image:'assets/case-002/replacement-manuscript-clean.png',storage:'theatreForgeryEvidence'},
   {id:'original',title:'Страница M. S.',image:'assets/case-002/torn-script-page.png',storage:'theatrePageEvidence'},
-  {id:'photos',title:'Фотореконструкция',image:'assets/case-002/backstage-room1-current.png',storage:'theatrePhotoEvidence'},
-  {id:'pass',title:'Журнал мастер-пропуска',image:'assets/case-002/master-pass-register.png',storage:'theatreBackstageEvidence'},
-  {id:'evelyn',title:'Показание Эвелин',image:'assets/case-002/evelyn-shaw.png',storage:'theatreEvelynMet'}
+  {id:'evelyn',title:'Показание Эвелин',image:'assets/case-002/evelyn-shaw.png',storage:'theatreEvelynMet'},
+  {id:'scarf',title:'Красный шарф',image:'assets/case-002/mary-shaw-red-scarf.png',storage:'theatreScarfEvidence'}
 ];
 let thomasSelectedEvidence='';
 const THOMAS_API_URL='https://bot-1787827995-6644-dinarag.bothost.tech/api/thomas';
@@ -250,11 +248,11 @@ const backstageRooms=[
     {id:'case',x:20,y:79,title:'Чёрный футляр',before:'The black case is ',wrong:'behind',after:' the mirror.',answer:'in front of'},
     {id:'canvas',x:73,y:67,title:'Свёрнутый холст',before:'The rolled canvas is ',wrong:'under',after:' the clock.',answer:'beside',answers:['beside','next to','in front of']}
   ]},
-  {name:'ВЕРХНЯЯ ГАЛЕРЕЯ',archive:'fly-gallery-v2.png',current:'fly-gallery-current.png',exit:{x:86,y:38,label:'ВОЙТИ В КОСТЮМЕРНУЮ'},differences:[
+  {name:'ВЕРХНЯЯ ГАЛЕРЕЯ',archive:'fly-gallery-v2.png',current:'fly-gallery-current-v2.png',exit:{x:86,y:38,label:'ВОЙТИ В КОСТЮМЕРНУЮ'},differences:[
     {id:'page',x:6,y:31,title:'Страница над лампой',before:'The torn page is ',wrong:'below',after:' the lamp.',answer:'above'},
     {id:'scarf',x:12,y:38,title:'Шарф под часами',before:'The red scarf is ',wrong:'above',after:' the clock.',answer:'below',answers:['below','under']},
     {id:'key',x:27,y:86,title:'Ключ напротив лестницы',before:'The brass key is ',wrong:'next to',after:' the stairs.',answer:'opposite'},
-    {id:'notebook',x:89,y:67,title:'Блокнот у перил',before:'The black notebook is ',wrong:'under',after:' the railing post.',answer:'next to'}
+    {id:'notebook',x:90,y:77,title:'Блокнот у перил',before:'The black notebook is ',wrong:'under',after:' the railing post.',answer:'next to'}
   ]}
 ];
 let backstageRoomIndex=0,backstagePhotos=new Set(),backstagePending=null;
@@ -306,26 +304,53 @@ const evelynDialogue=[
   ]},
   {speaker:'EVELYN SHAW',text:'Someone left a note under this door. It said, "Check the red coat."',next:6},
   {speaker:'EVELYN SHAW',text:'The red coat was missing from its usual place. Then I saw that the costume list had changed.',next:6},
-  {speaker:'EVELYN SHAW',text:'The red scarf was added to the list after rehearsal. It was never part of the final scene.',choices:[
-    {text:'Do you still have the note?',next:7},
-    {text:'Who could change the costume list?',next:8}
+  {speaker:'EVELYN SHAW',text:'The red scarf was added to the list after rehearsal. It was never part of the final scene.',next:7},
+  {speaker:'DETECTIVE',text:'May I take the scarf as evidence?',next:8},
+  {speaker:'EVELYN SHAW',text:'Of course. Take it. The scarf was kept in the old costume archive, not with this scene.',award:'theatreScarfEvidence',choices:[
+    {text:'Do you still have the note?',next:9},
+    {text:'Who could change the costume list?',next:10}
   ]},
-  {speaker:'EVELYN SHAW',text:'Yes. There is no name on it, only those four words.',end:true},
-  {speaker:'EVELYN SHAW',text:'The list stays in my desk. Victor and the stage manager also have keys to this room.',end:true}
+  {speaker:'EVELYN SHAW',text:'Yes. There is no name on it, only those four words.',choices:[
+    {text:'Did anyone see you return to the theatre?',next:11},
+    {text:'What did you do when you found the red coat?',next:12}
+  ]},
+  {speaker:'EVELYN SHAW',text:'The list stays in my desk. Victor and the stage manager also have keys to this room.',choices:[
+    {text:'Who knew you would check the costume room tonight?',next:13},
+    {text:'What did you do when you found the red coat?',next:12}
+  ]},
+  {speaker:'EVELYN SHAW',text:'I do not think so. The corridor was empty when I came back.',next:14},
+  {speaker:'EVELYN SHAW',text:'I checked its pockets and the rail beside it. There was nothing there. Someone wanted me to waste time.',next:14},
+  {speaker:'EVELYN SHAW',text:'No one. Rehearsal was over, and I had already gone home when I found the note in my bag.',next:14},
+  {speaker:'EVELYN SHAW',text:'The note brought me here, but the changed list pointed somewhere else. Whoever arranged this knew my routine and had access to the room.',end:true}
 ];
 function renderEvelynEncounter(){
   gameBody.innerHTML=`<section class="evelyn-room"><img class="evelyn-character" src="assets/case-002/evelyn-shaw.png" alt="Женщина в театральной костюмерной"><aside class="evelyn-thought"><img src="${avatarSrc()}" alt=""><p>В костюмерной кто-то есть. Она что-то ищет среди костюмов.</p><button type="button" data-evelyn-approach>ПОДОЙТИ</button></aside><div class="evelyn-conversation" aria-live="polite"></div></section>`;
   gameBody.querySelector('[data-evelyn-approach]').addEventListener('click',()=>{const scene=gameBody.querySelector('.evelyn-room');scene.classList.add('speaking');renderEvelynDialogue(0)});
 }
+function playTheatreEvidenceAcquisition(title,image,onComplete){
+  const scene=gameBody;if(!scene)return;
+  const animation=document.createElement('div');
+  animation.className='theatre-evidence-acquired';
+  animation.innerHTML=`<div class="theatre-evidence-target"><span>УЛИКИ</span><b>+1</b></div><figure><div><img src="${image}" alt="${title}"></div><figcaption><small>НОВАЯ УЛИКА</small><strong>${title}</strong></figcaption></figure>`;
+  scene.append(animation);
+  requestAnimationFrame(()=>animation.classList.add('revealed'));
+  setTimeout(()=>animation.classList.add('collecting'),1250);
+  setTimeout(()=>animation.classList.add('collected'),2050);
+  setTimeout(()=>{animation.remove();onComplete?.()},2550);
+}
 function renderEvelynDialogue(index){
   const node=evelynDialogue[index],panel=gameBody.querySelector('.evelyn-conversation');if(!node||!panel)return;
-  panel.innerHTML=`<div class="evelyn-bubble"><small>${node.speaker}</small><p>${node.text}</p></div>${node.choices?`<div class="evelyn-choices">${node.choices.map((choice,i)=>`<button type="button" data-evelyn-choice="${i}"><img src="${avatarSrc()}" alt=""><span>${choice.text}</span></button>`).join('')}</div>`:node.end?`<div class="evelyn-clue"><small>МЫСЛЬ ДЕТЕКТИВА</small><p>Кто оставил Эвелин записку и зачем направил её к красному пальто?</p><button type="button" data-evelyn-finish>СОХРАНИТЬ НАБЛЮДЕНИЕ</button></div>`:`<button type="button" class="evelyn-next" data-evelyn-next>ПРОДОЛЖИТЬ</button>`}`;
+  const newlyAwarded=node.award&&localStorage.getItem(node.award)!=='yes';
+  if(newlyAwarded){localStorage.setItem(node.award,'yes');renderTheatreEvidence()}
+  const detectiveLine=node.speaker==='DETECTIVE';
+  panel.innerHTML=`<div class="evelyn-bubble ${detectiveLine?'detective':''}">${detectiveLine?`<img src="${avatarSrc()}" alt="">`:''}<div><small>${node.speaker}</small><p>${node.text}</p></div></div>${node.choices?`<div class="evelyn-choices">${node.choices.map((choice,i)=>`<button type="button" data-evelyn-choice="${i}"><img src="${avatarSrc()}" alt=""><span>${choice.text}</span></button>`).join('')}</div>`:node.end?`<div class="evelyn-clue"><small>МЫСЛЬ ДЕТЕКТИВА</small><p>Кто оставил Эвелин записку и зачем направил её к красному пальто?</p><button type="button" data-evelyn-finish>СОХРАНИТЬ НАБЛЮДЕНИЕ</button></div>`:`<button type="button" class="evelyn-next" data-evelyn-next>ПРОДОЛЖИТЬ</button>`}`;
   panel.querySelectorAll('[data-evelyn-choice]').forEach(button=>button.addEventListener('click',()=>{const choice=node.choices[+button.dataset.evelynChoice];button.closest('.evelyn-choices').classList.add('chosen');setTimeout(()=>renderEvelynDialogue(choice.next),180)}));
   panel.querySelector('[data-evelyn-next]')?.addEventListener('click',()=>renderEvelynDialogue(node.next));
-  panel.querySelector('[data-evelyn-finish]')?.addEventListener('click',()=>{localStorage.setItem('theatreEvelynMet','yes');renderTheatreEvidence();renderBackstageEvelynConclusion()});
+  panel.querySelector('[data-evelyn-finish]')?.addEventListener('click',()=>{localStorage.setItem('theatreEvelynMet','yes');renderTheatreEvidence();playTheatreEvidenceAcquisition('Показание Эвелин','assets/case-002/evelyn-shaw.png',renderBackstageEvelynConclusion)});
+  if(node.award)playTheatreEvidenceAcquisition('Красный шарф','assets/case-002/mary-shaw-red-scarf.png');
 }
 function renderBackstageEvelynConclusion(){
-  gameBody.innerHTML=`<section class="evelyn-conclusion"><div><img src="assets/case-002/evelyn-shaw.png" alt="Эвелин Шоу"><article><small>НОВЫЙ СВИДЕТЕЛЬ · EVELYN SHAW</small><h2>Костюмный след подменили</h2><p>После репетиции кто-то изменил список костюмов и оставил Эвелин записку с просьбой проверить красное пальто. Красный шарф не принадлежал финальной сцене.</p><button type="button" data-evelyn-close>ВЕРНУТЬСЯ К ДЕЛУ</button></article></div></section>`;
+  gameBody.innerHTML=`<section class="evelyn-conclusion"><div><img src="assets/case-002/evelyn-shaw.png" alt="Эвелин Шоу"><article><small>НОВЫЙ СВИДЕТЕЛЬ · EVELYN SHAW</small><h2>Костюмный след подменили</h2><p>После репетиции кто-то изменил список костюмов и оставил Эвелин записку с просьбой проверить красное пальто. Красный шарф из изменённого списка теперь находится среди улик.</p><button type="button" data-evelyn-close>ВЕРНУТЬСЯ К ДЕЛУ</button></article></div></section>`;
   gameBody.querySelector('[data-evelyn-close]').addEventListener('click',()=>closeGame(false));
 }
 function renderBackstageRoute(){
@@ -371,7 +396,7 @@ function renderTheatrePrologue() {
   const scenes = [
     `<section class="theatre-prologue-scene theatre-victor"><button class="victor-approach" type="button" aria-label="Подойти к незнакомцу"><span class="victor-idle" role="img" aria-label="Незнакомец стоит у входа в театр"></span></button><aside class="detective-first-thought"><img src="${avatarSrc()}" alt=""><p>У входа кто-то ждёт. Похоже, мне стоит с ним поговорить.</p><button type="button" data-approach-victor>ПОДОЙТИ</button></aside><div class="victor-conversation" aria-live="polite"><div class="victor-dialogue-log" data-victor-log></div><div class="victor-choices" data-victor-choices></div></div></section>`,
     `<section class="theatre-prologue-scene theatre-auditorium" data-flashlight><div class="flashlight-darkness"></div><div class="prologue-whisper">Осмотрись</div><button class="scene-clue" style="--clue-x:12%;--clue-y:38%" data-x=".12" data-y=".38" data-thought="Аварийные лампы ещё горят. Отключение было недолгим." type="button" aria-label="Осмотреть аварийную лампу"></button><button class="scene-clue" style="--clue-x:50%;--clue-y:76%" data-x=".50" data-y=".76" data-thought="Все ушли к выходу. Но на дорожке видны следы в обратную сторону." type="button" aria-label="Осмотреть проход"></button><button class="scene-clue" style="--clue-x:66%;--clue-y:31%" data-x=".66" data-y=".31" data-thought="Занавес закрыли после отключения. Кто-то оставался возле сцены." type="button" aria-label="Осмотреть занавес"></button><aside class="scene-thought" aria-live="polite"><p></p><button type="button" aria-label="Закрыть мысль">ПРОДОЛЖИТЬ</button></aside><button class="manuscript-hotspot" type="button" aria-label="Осмотреть футляр"><span>E</span><b>ОСМОТРЕТЬ</b></button></section>`,
-    `<section class="theatre-prologue-scene theatre-fake-page"><div class="fake-page-photo"><img src="assets/case-002/replacement-manuscript.png" alt="Перепечатанная страница пьесы в футляре"><article class="fake-page-copy"><small>ACT III · SCENE FOUR</small><p><b>ELIZA:</b> A story belongs to the one brave enough to bring it to the stage.</p><p class="script-direction">Six figures cross the stage:</p><ol><li>a blue dress, a silver mask, no gloves</li><li>a tan coat, brown gloves, a black top hat</li><li>a black coat, an ivory scarf, no hat</li><li>a short red jacket, black gloves, a black case</li><li>a long blue coat, black gloves, a black case</li><li>a long red coat, black gloves, no hat, a black case</li></ol><p><b>ELIZA:</b> The last figure leaves before the lights return.</p><em>REVISED COPY · VICTOR HALE<br>PRINTED 18:41</em></article></div><div class="evidence-reveal"><small>НАДПИСЬ НА ФУТЛЯРЕ: ORIGINAL · 1998</small><p>Внутри лежит копия, напечатанная сегодня в 18:41.</p><strong>Оригинал подменили.</strong><button type="button" data-prologue-next>ПРОДОЛЖИТЬ ОСМОТР</button></div></section>`,
+    `<section class="theatre-prologue-scene theatre-fake-page"><div class="fake-page-photo"><img src="assets/case-002/replacement-manuscript-clean.png" alt="Чисто перепечатанная страница пьесы в футляре"><article class="fake-page-copy"><small>ACT III · SCENE FOUR</small><p><b>ELIZA:</b> A story belongs to the one brave enough to bring it to the stage.</p><section class="wardrobe-cue-sheet"><b>WARDROBE CUE SHEET</b><p>Six masked guests enter:</p><ol><li>a blue dress, a silver mask, no gloves</li><li>a tan coat, brown gloves, a black top hat</li><li>a black coat, an ivory scarf, no hat</li><li>a short red jacket, black gloves, a black case</li><li>a long blue coat, black gloves, a black case</li><li>a long red coat, black gloves, no hat, a black case</li></ol></section><em>VICTOR HALE</em></article></div><div class="evidence-reveal detective-page-thought"><small>МЫСЛЬ ДЕТЕКТИВА</small><p>Хм. На футляре указано «Original, 1998», но страница внутри выглядит новой, а внизу напечатано имя Виктора.</p><strong>Значит, здесь должен лежать другой лист. Где оригинал?</strong><button type="button" data-prologue-next>ПРОДОЛЖИТЬ ОСМОТР</button></div></section>`,
     `<section class="theatre-prologue-scene theatre-blackout" data-flashlight><div class="flashlight-darkness"></div><div class="curtain-movement"></div><div class="prologue-whisper final">У сцены слышен шум механизма.</div><button type="button" class="begin-investigation" data-prologue-finish>ПОДОЙТИ К СЦЕНЕ</button></section>`
   ];
   gameBody.innerHTML = scenes[theatrePrologueStep];
@@ -380,7 +405,7 @@ function renderTheatrePrologue() {
     gameBody.querySelector('[data-approach-victor]')?.addEventListener('click',beginConversation);
     gameBody.querySelector('.victor-approach')?.addEventListener('click',beginConversation);
   }
-  gameBody.querySelector('[data-prologue-next]')?.addEventListener('click', () => { localStorage.setItem('theatreForgeryEvidence','yes');renderTheatreEvidence();theatrePrologueStep++;renderTheatrePrologue(); });
+  gameBody.querySelector('[data-prologue-next]')?.addEventListener('click', () => { localStorage.setItem('theatreForgeryEvidence','yes');renderTheatreEvidence();playTheatreEvidenceAcquisition('Поддельная страница','assets/case-002/replacement-manuscript-clean.png',()=>{theatrePrologueStep++;renderTheatrePrologue()}) });
   gameBody.querySelector('.manuscript-hotspot')?.addEventListener('click', () => { theatrePrologueStep = 2; renderTheatrePrologue(); });
   gameBody.querySelector('[data-prologue-finish]')?.addEventListener('click', e => {
     e.currentTarget.disabled = true;
@@ -473,7 +498,7 @@ const spotlightActors={
 let spotlightRound=0,spotlightCleanup=()=>{};
 function startTheatreStageGame(){spotlightRound=0;renderWardrobeIntro()}
 function renderWardrobeIntro(){
-  gameBody.innerHTML=`<section class="wardrobe-intro"><div><small>КОСТЮМНЫЙ МЕХАНИЗМ</small><h2>Найди костюмы со страницы</h2><p>Механизм подаёт манекены по одному.</p><blockquote>Сверяй каждый костюм с английским описанием из пьесы.</blockquote><button type="button" data-start-hunt>НАЧАТЬ ПОИСК</button></div></section>`;
+  gameBody.innerHTML=`<section class="wardrobe-intro"><div><h2>Найди костюмы из пьесы</h2><button type="button" data-start-hunt>НАЧАТЬ ПОИСК</button></div></section>`;
   gameBody.querySelector('[data-start-hunt]').addEventListener('click',renderHuntCountdown);
 }
 function renderHuntCountdown(){
@@ -516,6 +541,6 @@ function renderMannequinSearch(){
 function renderSpotlightDiscovery(){
   spotlightCleanup();
   gameBody.innerHTML=`<section class="spotlight-result theatre-page-result">${theatrePageMarkup('ПОЛОЖИТЬ В МАТЕРИАЛЫ ДЕЛА')}</section>`;
-  gameBody.querySelector('[data-theatre-page-action]').addEventListener('click',()=>{localStorage.setItem('theatrePageEvidence','yes');renderTheatreEvidence();closeGame(false);setTimeout(()=>theatreCase?.querySelector('.theatre-materials')?.scrollIntoView({behavior:'smooth',block:'center'}),100)});
+  gameBody.querySelector('[data-theatre-page-action]').addEventListener('click',()=>{localStorage.setItem('theatrePageEvidence','yes');renderTheatreEvidence();playTheatreEvidenceAcquisition('Вырванная страница','assets/case-002/torn-script-page.png',()=>{closeGame(false);setTimeout(()=>theatreCase?.querySelector('.theatre-materials')?.scrollIntoView({behavior:'smooth',block:'center'}),100)})});
 }
 document.addEventListener('click',e=>{if(e.target.closest('[data-close]'))spotlightCleanup()});

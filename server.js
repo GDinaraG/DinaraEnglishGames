@@ -123,10 +123,11 @@ async function requestThomasReply(payload) {
   const relevant = /manuscript|page|theatre|theater|blackout|mechanism|winch|rope|access|pass|m\.?\s*s\.?|mary|evelyn|victor|what|who|why|where|when|how|could|would/.test(normalized);
   if (lastUser.trim().length >= 18 && relevant) state.trust = Math.min(4, state.trust + 1);
   const asksAboutMs = /m\.?\s*s\.?|initials|mary shaw|who (is|was) (m|mary)|whose (name|initials)/.test(normalized);
+  const asksAboutScarf = /scarf|who (did|does) it belong|whose (is|was) it|recognize (it|this)|seen (it|this) before/.test(normalized);
   const asksForAccess = /mechanism|winch|machinery|let me (see|inspect|examine|use)|allow me|give me access|open (it|the|this)|unlock/.test(normalized);
-  const revealedMsNow = !state.msIdentified && evidence.id === 'original' && asksAboutMs;
+  const revealedMsNow = !state.msIdentified && ((evidence.id === 'original' && asksAboutMs) || (evidence.id === 'scarf' && asksAboutScarf));
   if (revealedMsNow) state.msIdentified = true;
-  const grantedAccessNow = !state.accessGranted && state.trust >= 2 && state.msIdentified && evidence.id === 'pass' && asksForAccess;
+  const grantedAccessNow = !state.accessGranted && state.trust >= 2 && state.msIdentified && asksForAccess;
   if (grantedAccessNow) state.accessGranted = true;
   const facts = [];
   if (state.msIdentified) facts.push('M. S. is Mary Shaw, Evelyn Shaw’s mother and a former theatre costume designer.');
@@ -141,7 +142,10 @@ async function requestThomasReply(payload) {
     state.msIdentified
       ? 'The detective has established that M. S. is Mary Shaw, Evelyn Shaw’s mother and a former theatre costume designer.'
       : 'Do not identify M. S. or mention Mary Shaw. If asked about M. S., say you need to see the page itself.',
-    revealedMsNow ? 'The detective has just shown the original M. S. page. Identify M. S. clearly now.' : '',
+    revealedMsNow && evidence.id === 'original' ? 'The detective has just shown the original M. S. page. Identify M. S. clearly now.' : '',
+    evidence.id === 'scarf'
+      ? 'The detective has shown you a deep-red scarf. You do not know how it came to be in the current costume room. However, you recognize its distinctive hand-repaired corner: it belonged to Mary Shaw, Evelyn Shaw’s mother. State both parts naturally. Do not accuse Evelyn.'
+      : '',
     state.accessGranted
       ? 'You have granted the detective access to inspect the stage mechanism.'
       : 'Do not grant access to the mechanism yet.',
