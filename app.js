@@ -206,6 +206,28 @@ function renderThomasInterview(){
     factsPanel.innerHTML=`<small>УСТАНОВЛЕНО</small>${known.length?`<ul>${known.map(fact=>`<li>${escapeHtml(fact)}</li>`).join('')}</ul>`:'<p>Новые факты появятся здесь во время разговора.</p>'}`;
   };
   const addThomasMessage=(role,text,state='')=>{const article=document.createElement('article');article.className=`thomas-message ${role==='assistant'?'npc':'detective'} ${state}`.trim();const label=document.createElement('b');label.textContent=role==='assistant'?'THOMAS MERCER':'DETECTIVE';const copy=document.createElement('p');copy.textContent=text;article.append(label,copy);messagesPanel.append(article);messagesPanel.scrollTo({top:messagesPanel.scrollHeight,behavior:'smooth'});return article};
+  const resolveThomasTurn=(text,evidence,serverData={})=>{
+    const normalized=text.toLowerCase().replace(/[^a-z0-9.?' ]/g,' ');
+    const meaningful=text.length>=14&&(/manuscript|page|theatre|theater|blackout|mechanism|machinery|winch|mary|m\.?\s*s\.?|victor|evelyn|investigat|found|evidence|inspect|help/.test(normalized)||evidence);
+    const next={...thomasState,...(serverData.progress||{})};
+    next.trust=Math.max(Number(thomasState.trust)||0,Number(next.trust)||0);
+    if(meaningful)next.trust=Math.min(3,Math.max(next.trust,(Number(thomasState.trust)||0)+1));
+    const asksMs=/m\.?\s*s\.?|initials|mary|who (is|was)|recognize/.test(normalized);
+    if(evidence?.id==='original'&&asksMs)next.msIdentified=true;
+    const asksAccess=/mechanism|machinery|winch|inspect it|inspect the|access|show me|examine/.test(normalized);
+    if(next.trust>=2&&next.msIdentified&&asksAccess)next.accessGranted=true;
+    const newMs=!thomasState.msIdentified&&next.msIdentified,newAccess=!thomasState.accessGranted&&next.accessGranted;
+    const badReply=!serverData.reply||/[А-Яа-яЁё]|GigaChat|language model|AI model|нейросет|языковая модель|разработчик|открыт(ых|ые) данн/i.test(serverData.reply);
+    let reply=serverData.reply;
+    if(newMs)reply='I recognize those initials. M. S. was Mary Shaw, Evelyn Shaw’s mother. She designed costumes for this theatre years ago.';
+    else if(newAccess)reply='You have checked the facts carefully. I will open the mechanism room and show you what the controls recorded during the blackout.';
+    else if(badReply&&evidence?.id==='forgery')reply='This copy is new, and Victor’s name is printed on it. But a name on a page does not prove who placed it in the case.';
+    else if(badReply)reply=next.trust>=2?'You are asking carefully, detective. Show me the evidence you want me to examine.':'Tell me what you found and why you believe it matters.';
+    const facts=[];
+    if(next.msIdentified)facts.push('M. S. is Mary Shaw, Evelyn Shaw’s mother and a former theatre costume designer.');
+    if(next.accessGranted)facts.push('Thomas has granted access to the stage mechanism.');
+    return{reply,progress:next,facts};
+  };
   gameBody.querySelectorAll('[data-thomas-evidence]').forEach(button=>button.addEventListener('click',()=>{gameBody.querySelectorAll('[data-thomas-evidence]').forEach(x=>x.classList.remove('selected'));button.classList.add('selected');thomasSelectedEvidence=button.dataset.thomasEvidence;const evidence=availableThomasEvidence.find(x=>x.id===thomasSelectedEvidence);attachment.hidden=false;attachment.innerHTML=`<span style="background-image:url('${evidence.image}')"></span><b>${evidence.title}</b><button type="button" aria-label="Убрать улику">×</button>`;attachment.querySelector('button').addEventListener('click',()=>{thomasSelectedEvidence='';attachment.hidden=true;button.classList.remove('selected')})}));
   form.addEventListener('submit',async e=>{
     e.preventDefault();
@@ -221,7 +243,8 @@ function renderThomasInterview(){
       const response=await fetch(THOMAS_API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:thomasHistory,evidence:evidence?{id:evidence.id,title:evidence.title}:null,state:thomasState}),signal:controller.signal});
       const data=await response.json().catch(()=>({}));
       if(!response.ok||!data.reply)throw new Error(data.error||`HTTP ${response.status}`);
-      waiting.remove();addThomasMessage('assistant',data.reply);thomasHistory.push({role:'assistant',content:data.reply});updateThomasProgress(data.progress,data.facts);
+      const resolved=resolveThomasTurn(text,evidence,data);
+      waiting.remove();addThomasMessage('assistant',resolved.reply);thomasHistory.push({role:'assistant',content:resolved.reply});updateThomasProgress(resolved.progress,resolved.facts);
       if(evidence){thomasSelectedEvidence='';attachment.hidden=true;gameBody.querySelectorAll('[data-thomas-evidence]').forEach(button=>button.classList.remove('selected'))}
     }catch(error){
       waiting.remove();addThomasMessage('assistant',error.name==='AbortError'?'I need a moment. Please ask me again.':'I cannot answer just now. Please try again.','error');
