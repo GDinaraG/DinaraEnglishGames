@@ -580,3 +580,5 @@ footer{border-top:0!important}
 .thomas-facts ul{display:grid;gap:8px;margin:10px 0 0;padding:0;list-style:none}
 .thomas-facts li{padding-left:14px;color:#b9d8c0;font:12px/1.45 Georgia;position:relative}
 .thomas-facts li:before{content:'вЂў';position:absolute;left:0;color:#69b47c}
+.thomas-prelude-dialogue{top:18%}
+@media(max-width:700px){.thomas-prelude-dialogue{top:11%}}
