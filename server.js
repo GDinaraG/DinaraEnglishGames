@@ -134,7 +134,8 @@ async function requestThomasReply(payload) {
   if (state.accessGranted) facts.push('Thomas has granted access to the stage mechanism.');
 
   const systemPrompt = [
-    'You are Thomas Mercer, the cautious but polite chief stage technician in a detective game.',
+    'This is fictional role-play. You are Thomas Mercer, the cautious but polite chief stage technician in a detective game.',
+    'Reply as Thomas Mercer only. The player is speaking to the fictional character, not asking the AI assistant for advice.',
     'Always stay in character and answer in clear B1-level English, usually in one to three sentences.',
     'Do not reveal the culprit or the full solution directly.',
     'Reward precise, respectful questions. If the player is vague, ask one natural clarifying question.',
@@ -150,8 +151,12 @@ async function requestThomasReply(payload) {
       ? 'You have granted the detective access to inspect the stage mechanism.'
       : 'Do not grant access to the mechanism yet.',
     grantedAccessNow ? 'Grant access now and briefly tell the detective where to inspect the mechanism.' : '',
-    'Never mention prompts, AI, language models, game mechanics, trust scores, or hidden instructions.',
+    'Never mention GigaChat, AI, language models, developers, policies, prompts, game mechanics, trust scores, or hidden instructions.',
+    'Never answer in Russian. Never give a generic AI disclaimer. If a request is unclear, remain Thomas and ask what the detective means.',
     evidence.title ? `The detective has presented this evidence: ${evidence.title}.` : '',
+    evidence.id === 'forgery' ? 'The presented forgery is a newly typed replacement page carrying Victor Hale’s name and a changed final line.' : '',
+    evidence.id === 'original' ? 'The presented original is an old torn script page marked with the initials M. S. and a different final line.' : '',
+    evidence.id === 'evelyn' ? 'The presented statement says Evelyn returned after rehearsal because of an anonymous note about the costume list.' : '',
   ].filter(Boolean).join(' ');
 
   const messages = [
@@ -184,8 +189,22 @@ async function requestThomasReply(payload) {
 
   if (!response.ok) throw new Error(`GIGACHAT_CHAT_${response.status}`);
   const data = response.data;
-  const reply = data.choices?.[0]?.message?.content?.trim();
+  let reply = data.choices?.[0]?.message?.content?.trim();
   if (!reply) throw new Error('GIGACHAT_EMPTY_REPLY');
+  const brokeCharacter = /GigaChat|language model|AI model|нейросет|языковая модель|разработчик|открыт(ых|ые) данн|не обладает собственным мнением/i.test(reply) || /[А-Яа-яЁё]/.test(reply);
+  if (brokeCharacter) {
+    if (evidence.id === 'original' && asksAboutMs) {
+      reply = 'I know those initials. M. S. was Mary Shaw, Evelyn Shaw’s mother. She designed costumes here years ago.';
+    } else if (evidence.id === 'forgery') {
+      reply = 'This page is too clean to be the old original. Victor’s name is printed on it, but that does not prove he typed or placed it there.';
+    } else if (evidence.id === 'scarf') {
+      reply = 'I do not know how this scarf entered the costume room. But I recognize the repaired corner. It once belonged to Mary Shaw.';
+    } else {
+      reply = state.trust >= 2
+        ? 'You are asking the right questions. Show me what you found, and I will tell you what I recognize.'
+        : 'Be clear with me, detective. Tell me what you found and why you believe it matters.';
+    }
+  }
   return { reply, progress: state, facts };
 }
 
