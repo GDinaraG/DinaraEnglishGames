@@ -576,9 +576,9 @@ footer{border-top:0!important}
 .thomas-mood>div i.active{background:#c98a47!important;box-shadow:0 0 9px #c98a4755}
 .thomas-goals li.done{color:#8fd0a0}
 .thomas-goals li.done i{border-color:#69b47c;background:#173f23;box-shadow:0 0 11px #5dbb7555}
-.thomas-goals li.done i:after{content:'вњ“';display:block;color:#a9e7b6;font:10px/13px Inter;text-align:center}
+.thomas-goals li.done i:after{content:'\2713';display:block;color:#a9e7b6;font:10px/13px Inter;text-align:center}
 .thomas-facts ul{display:grid;gap:8px;margin:10px 0 0;padding:0;list-style:none}
 .thomas-facts li{padding-left:14px;color:#b9d8c0;font:12px/1.45 Georgia;position:relative}
-.thomas-facts li:before{content:'вЂў';position:absolute;left:0;color:#69b47c}
+.thomas-facts li:before{content:'\2022';position:absolute;left:0;color:#69b47c}
 .thomas-prelude-dialogue{top:18%}
 @media(max-width:700px){.thomas-prelude-dialogue{top:11%}}
